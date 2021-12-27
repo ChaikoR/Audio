@@ -1,0 +1,34 @@
+﻿syntax = "proto3";
+
+option csharp_namespace = "GrpcService";
+
+
+service RemoteMessages {
+	rpc GetMessageInfo (MessageLookupModel) returns (MessageModel);
+	rpc InsertMessage (MessageModel) returns (Reply);
+	rpc UpdateMessage (MessageModel) returns (Reply);
+	rpc DeleteMessage (MessageLookupModel) returns (Reply);
+	rpc GetAllMessages (Empty) returns (MessagesList);
+}
+
+message Empty {}
+
+message MessagesList {
+   repeated MessageModel items = 1;
+}
+
+message Reply {
+	string result = 1;
+	bool isOk = 2;
+}
+
+// The request message 
+message MessageLookupModel {
+  int32 messagesId = 1;
+}
+
+// The response message 
+message MessageModel {
+  int32 messagesId = 1;  
+  string name = 2;
+}
