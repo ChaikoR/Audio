@@ -24,7 +24,8 @@ namespace Blazor.Server.Controllers
         {
             try
             {
-                return Ok(await _servicesGrpc.GetAllMessagesAsync());
+                var model = await _servicesGrpc.GetAllMessagesAsync();
+                return Ok(model);
             }
             catch (Exception)
             {
