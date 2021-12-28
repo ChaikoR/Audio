@@ -1,9 +1,28 @@
 ﻿@page "/"
 
+
+
 <PageTitle>Index</PageTitle>
+@if (messages != null)
+{
+    foreach(var message in messages)
+    {
+    
+        <span>@message.MessagesId</span>  <span>@message.Name</span> <br/>
+    }
+}
 
-<h1>Hello, world!</h1>
 
-Welcome to your new app.
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+
+@code{
+    public List<Messages>? messages { get; set; }
+
+    [Inject]
+    public IMessagesClientServices? MessagesClientServices { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        messages = (await MessagesClientServices.GetAllMessagesAsync()).ToList();
+    }
+}

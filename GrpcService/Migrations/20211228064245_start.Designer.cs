@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GrpcService.Migrations
 {
     [DbContext(typeof(MessagesDBConext))]
-    [Migration("20211227192814_initial")]
-    partial class initial
+    [Migration("20211228064245_start")]
+    partial class start
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

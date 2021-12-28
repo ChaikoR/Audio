@@ -4,6 +4,11 @@ option csharp_namespace = "GrpcService";
 
 service Customer {
 	rpc GetCustomerInfo(CustomeerLookupModel) returns (CustomerModel);
+	rpc GetNewCustomers(NewCustomerRequest) returns (stream CustomerModel);
+}
+
+message NewCustomerRequest{
+
 }
 
 message CustomeerLookupModel{
