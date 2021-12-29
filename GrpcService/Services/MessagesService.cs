@@ -13,7 +13,7 @@ namespace GrpcService.Services
             _context = context;
         }
 
-        public override async Task<List<MessageModel>> GetMessages(MessagesRequest request, IServerStreamWriter<MessageModel> responseStream, ServerCallContext context)
+        public override async Task<MessagesList> GetMessages(MessagesRequest request, ServerCallContext context)
         {
             List<MessageModel> messages = new List<MessageModel>();
 
@@ -27,13 +27,9 @@ namespace GrpcService.Services
                         Name=message.Name
                     });
                 }
-
-            //foreach (var cust in messages)
-            //{
-            //    //await Task.Delay(1000);
-            //    await responseStream.WriteAsync(cust);
-            //}
-            return messages;
+            MessagesList replyModel = new MessagesList();
+            replyModel.Messages.AddRange(messages);
+            return replyModel;
         }
     }
 }

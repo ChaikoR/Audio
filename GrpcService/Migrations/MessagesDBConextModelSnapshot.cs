@@ -40,27 +40,7 @@ namespace GrpcService.Migrations
                         new
                         {
                             MessagesId = 1,
-                            Name = "Sound 1"
-                        },
-                        new
-                        {
-                            MessagesId = 2,
-                            Name = "Sound 2"
-                        },
-                        new
-                        {
-                            MessagesId = 3,
-                            Name = "Sound 3"
-                        },
-                        new
-                        {
-                            MessagesId = 4,
-                            Name = "Sound 4"
-                        },
-                        new
-                        {
-                            MessagesId = 5,
-                            Name = "Sound 5"
+                            Name = "http://sample.com"
                         });
                 });
 #pragma warning restore 612, 618

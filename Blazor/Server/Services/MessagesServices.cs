@@ -19,27 +19,27 @@ namespace Blazor.Server.Services
             List<Messages> messages = new List<Messages>();
 
             // //получаем Grpc данные
+
+            //var channel = GrpcChannel.ForAddress("https://localhost:7298");
+            //var client = new People.PeopleClient(channel);
+            //var result = client.GetPeople(new RequestModel(), new Grpc.Core.Metadata());
+
             var channel = GrpcChannel.ForAddress("https://localhost:7298");
             var client = new RemoteMessages.RemoteMessagesClient(channel);
+            var result = client.GetMessages(new MessagesRequest(), new Grpc.Core.Metadata());
 
 
-
-            //// var reply = client.GetMessages(new MessagesRequest());
-
-            using (var call = client.GetMessages(new MessagesRequest()))
+            foreach (var item in result.Messages)
             {
-                while (await call.ResponseStream.MoveNext())
-                {
-                    var currentCustomer = call.ResponseStream.Current;
-                    messages.Add(new Messages
+                messages.Add(new Messages
                     {
-                        MessagesId = currentCustomer.MessagesId,
-                        Name = currentCustomer.Name
-                    });
-                }
+                        MessagesId = item.MessagesId,
+                        Name = item.Name,
+                    }
+                );
             }
-
-                return messages;
+                
+            return messages;
         }
     }
 }
