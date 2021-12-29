@@ -17,4 +17,5 @@ message MessagesList {
 message MessageModel {
   int32 messagesId = 1;  
   string name = 2;
+  bytes binaryData =3;
 }
