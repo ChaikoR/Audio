@@ -15,14 +15,16 @@ namespace GrpcService.ServicesDB
             _context = context;
         }
 
-        async Task<List<Messages>> IMessagesServices.GetAllAsync()
+        public async Task<List<Messages>> GetAllAsync()
         {
             return await _context.Messages.ToListAsync();
         }
 
-        void IMessagesServices.AddMessages(Messages model)
+        public async Task<Messages> AddMessageAsync(Messages model)
         {
-            throw new NotImplementedException();
+            _context.Messages.Add(model);
+            await _context.SaveChangesAsync();
+            return model;
         }
 
         void IMessagesServices.DeleteMessages(int id)
@@ -39,5 +41,10 @@ namespace GrpcService.ServicesDB
         {
             throw new NotImplementedException();
         }
+
+        //public async Task<MessageModel> FindMessageAsync(int messageId)
+        //{
+        //    return await _context.Messages.FirstOrDefaultAsync(i => i.MessagesId == messageId);
+        //}
     }
 }

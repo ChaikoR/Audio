@@ -10,5 +10,6 @@ namespace Blazor.Server.Interface
     public interface IMessagesServices
     {
         Task<List<Messages>> GetAllMessagesAsync();
+        Task<Messages> AddMessageAsync(Messages model);
     }
 }

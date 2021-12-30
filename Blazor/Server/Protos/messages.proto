@@ -4,6 +4,10 @@ option csharp_namespace = "GrpcService";
 
 service RemoteMessages {
 	rpc GetMessages(MessagesRequest) returns (MessagesList);
+	rpc AddMessage(MessageModel) returns (MessageModel);
+	rpc UpdateMessage (MessageModel) returns (MessageModel);
+	rpc DeleteMessage (MessageId) returns (MessageModel);
+	rpc GetMessagesLastId(MessageId) returns (MessageModel);
 }
 
 message MessagesRequest{
@@ -17,5 +21,9 @@ message MessagesList {
 message MessageModel {
   int32 messagesId = 1;  
   string name = 2;
-  bytes binaryData =3;
+  //bytes binaryData =3;
+}
+
+message MessageId{
+	int32 messagesId = 1;  
 }

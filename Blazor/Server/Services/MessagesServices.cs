@@ -13,21 +13,28 @@ namespace Blazor.Server.Services
 {
     public class MessagesServices : IMessagesServices
     {
+        public async Task<Messages> AddMessageAsync(Messages model)
+        {
+            MessageModel messageModel = new MessageModel();
+            messageModel.Name = model.Name;
+
+            var channel = GrpcChannel.ForAddress("https://localhost:7298");
+            var client = new RemoteMessages.RemoteMessagesClient(channel);
+            var result = client.AddMessage(messageModel);
+
+            model.MessagesId = result.MessagesId;
+            model.Name = result.Name;
+            return model;
+        }
+
         public async Task<List<Messages>> GetAllMessagesAsync()
         {
 
             List<Messages> messages = new List<Messages>();
 
-            // //получаем Grpc данные
-
-            //var channel = GrpcChannel.ForAddress("https://localhost:7298");
-            //var client = new People.PeopleClient(channel);
-            //var result = client.GetPeople(new RequestModel(), new Grpc.Core.Metadata());
-
             var channel = GrpcChannel.ForAddress("https://localhost:7298");
             var client = new RemoteMessages.RemoteMessagesClient(channel);
             var result = client.GetMessages(new MessagesRequest(), new Grpc.Core.Metadata());
-
 
             foreach (var item in result.Messages)
             {

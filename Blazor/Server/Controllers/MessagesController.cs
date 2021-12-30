@@ -6,10 +6,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Blazor.Shared.Models;
 
 namespace Blazor.Server.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/Messages")]
     [ApiController]
     public class MessagesController : ControllerBase
     {
@@ -32,6 +33,25 @@ namespace Blazor.Server.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError,
                     "Error retrieving data from the database");
             }
+        }
+
+        [HttpPost]
+        [Route("CreateOrUpdatePost")]
+        public async Task<IActionResult> CreateOrUpdatePost(Messages messages)
+        {
+            Messages newModel = new Messages();
+
+            if (messages.MessagesId == 0)
+            {
+                //добавляем в БД
+                newModel = await _servicesGrpc.AddMessageAsync(messages);
+            }
+            else { 
+            //обновляем
+
+            }
+            return newModel;
+
         }
     }
 }

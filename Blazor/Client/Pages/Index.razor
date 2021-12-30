@@ -1,70 +1,135 @@
 ﻿@page "/"
 
-
+@*@inject JsonPlaceHolderClient _jsonPlaceHolderClient;*@
+@inject IMessagesClientServices _service;
+@inject IJSRuntime _js;
 
 <PageTitle>Index</PageTitle>
 
-<div class="accordion" id="accordionPanelsStayOpenExample">
-  <div class="accordion-item">
-    <h2 class="accordion-header" id="panelsStayOpen-headingOne">
-      <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne">
-        Accordion Item #1
-      </button>
-    </h2>
-    <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show" aria-labelledby="panelsStayOpen-headingOne">
-      <div class="accordion-body">
-        <strong>This is the first item's accordion body.</strong> It is shown by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
-      </div>
+<button class="btn btn-primary" @onclick='@(e => OpenModal(0,"add"))'>Добавить сообщение</button>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th scope="col">Id</th>
+            <th scope="col">Название сообщения</th>
+            @*<th scope="col">Сообщение</th>*@
+            <th scope="col">Операции</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (messages != null)
+        {
+            @foreach (var message in messages)
+            {
+                <tr>
+                    <td>@message.MessagesId</td>
+                    <td>@message.Name</td>
+                    @*<td>@message.BinaryData</td>*@
+                    <td>
+                        <button type="button" class="btn btn-primary"
+                        @onclick='@(e => OpenModal(message.MessagesId,"update"))'>Редактировать</button>
+                        |
+                        <button type="button" class="btn btn-primary"
+                        @onclick='@(e => DeletePost(message.MessagesId))'>Удалить</button>    
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+<div class="modal" tabindex="-1" role="dialog" id="myModal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">@formTitle</h5>
+                <button type="button" class="close" @onclick="(e => CloseModal())" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="txtTitle">Название сообщения</label>
+                    <input type="text" class="form-control" id="txtTitle" @bind="message.Name">
+                </div>
+@*                <div class="form-group">
+                    <label for="txtDescription">Description</label>
+                    <input type="text" class="form-control" id="txtDescription" @bind="payload.BinaryData">
+                </div>*@
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" @onclick="(e => CreateOrUpdatePost())">Сохранить</button>
+                <button type="button" class="btn btn-secondary" @onclick="(e => CloseModal())">Закрыть</button>
+            </div>
+        </div>
     </div>
-  </div>
-  <div class="accordion-item">
-    <h2 class="accordion-header" id="panelsStayOpen-headingTwo">
-      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="false" aria-controls="panelsStayOpen-collapseTwo">
-        Accordion Item #2
-      </button>
-    </h2>
-    <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-headingTwo">
-      <div class="accordion-body">
-        <strong>This is the second item's accordion body.</strong> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
-      </div>
-    </div>
-  </div>
-  <div class="accordion-item">
-    <h2 class="accordion-header" id="panelsStayOpen-headingThree">
-      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseThree" aria-expanded="false" aria-controls="panelsStayOpen-collapseThree">
-        Accordion Item #3
-      </button>
-    </h2>
-    <div id="panelsStayOpen-collapseThree" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-headingThree">
-      <div class="accordion-body">
-        <strong>This is the third item's accordion body.</strong> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
-      </div>
-    </div>
-  </div>
 </div>
-
-@if (messages != null)
-{
-    foreach(var message in messages)
-    {
-    
-        <span>@message.MessagesId</span>  <span>@message.Name</span> <br/>
-    }
-}
-
 
 
 
 @code{
     private List<Messages>? messages { get; set; }
+    private Messages message = new Messages();
+    string formTitle = "";
 
     [Inject]
     public IMessagesClientServices? MessagesClientServices { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        messages = (await MessagesClientServices.GetAllMessagesAsync()).ToList();
+        messages = (await _service.GetAllMessagesAsync()).ToList();
     }
 
-        
+    private async Task OpenModal(int postId, string operationType)
+    {
+        if (operationType.ToLower() == "add")
+        {
+            formTitle = "Добавление";
+            message = new Messages();
+            await _js.InvokeVoidAsync("global.openModal", "myModal");
+        }
+        else
+        {
+            formTitle = "Редактирование";
+            message = messages.Where(i => i.MessagesId == postId).FirstOrDefault();
+            await _js.InvokeVoidAsync("global.openModal", "myModal");
+        }
+    }
+
+    private async Task CloseModal()
+    {
+        await _js.InvokeVoidAsync("global.closeModal", "myModal");
+    }
+
+    private async Task CreateOrUpdatePost()
+    {
+        if (message.MessagesId == 0)
+        {
+            // for adding new record
+            var newRecord = await _service.CreateOrUpdatePost(message);
+            messages.Insert(0, newRecord);
+            await CloseModal();
+        }
+        else
+        {
+            var updatedRecord = await _service.CreateOrUpdatePost(message);
+
+            messages = messages.Where(_ => _.MessagesId != updatedRecord.MessagesId).ToList();
+
+            messages.Insert(0, updatedRecord);
+            await CloseModal();
+        }
+    }
+
+    //private async Task DeletePost(int id)
+    //{
+    //    await _jsonPlaceHolderClient.DeletePost(id);
+    //    allposts = allposts.Where(_ => _.Id != id).ToList();
+    //}
+
+    private async Task DeletePost(int id)
+    {
+        await CloseModal();
+    }
+
 }

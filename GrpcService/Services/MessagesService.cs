@@ -1,5 +1,6 @@
 ﻿using Grpc.Core;
 using GrpcService.Interface;
+using GrpcService.Models;
 
 namespace GrpcService.Services
 {
@@ -30,6 +31,22 @@ namespace GrpcService.Services
             MessagesList replyModel = new MessagesList();
             replyModel.Messages.AddRange(messages);
             return replyModel;
+        }
+
+        public override async Task<MessageModel> AddMessage(MessageModel request, ServerCallContext context)
+        {
+            Messages addModel = new Messages();
+            addModel.Name = request.Name;
+            Messages updateMessage = await _context.AddMessageAsync(addModel);
+            if (updateMessage == null)
+            {
+                throw new RpcException(new Status(StatusCode.NotFound, $"Contact with ID={request.MessagesId} is not found."));
+            }
+            MessageModel messageModel = new MessageModel();
+            messageModel.MessagesId = updateMessage.MessagesId;
+            messageModel.Name = updateMessage.Name;
+
+            return await Task.FromResult(messageModel);
         }
     }
 }
