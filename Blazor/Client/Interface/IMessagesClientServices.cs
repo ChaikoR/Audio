@@ -5,6 +5,7 @@ namespace Blazor.Client.Interface
         public interface IMessagesClientServices
         {
             Task<IEnumerable<Messages>> GetAllMessagesAsync();
-            Task<Messages> CreateOrUpdatePost(Messages newMessages);
-        }
+            Task<Messages> CreateOrUpdateMessageAsync(Messages newMessages);
+            Task<Messages> DeleteMessageAsync(int Id);
+    }
 }

@@ -27,24 +27,27 @@ namespace GrpcService.ServicesDB
             return model;
         }
 
-        void IMessagesServices.DeleteMessages(int id)
+        public async Task<Messages> UpdateMessageAsync(Messages model)
         {
-            throw new NotImplementedException();
+            Messages? updateModel = new Messages();
+            updateModel = await _context.Messages.FindAsync(model.MessagesId);
+            updateModel.MessagesId = model.MessagesId;
+            updateModel.Name = model.Name;
+            
+            return updateModel;
         }
 
-        Messages IMessagesServices.GetMessagesById(int id)
-        {
-            throw new NotImplementedException();
-        }
 
-        void IMessagesServices.UpdateMessages(Messages model)
+        public async Task<Messages> DeleteMessageAsync(int id)
         {
-            throw new NotImplementedException();
+            Messages? deleteModel = new Messages();
+            deleteModel = await _context.Messages.FindAsync(id);
+            if (deleteModel != null) { 
+                _context.Messages.Remove(deleteModel);
+                _context.SaveChanges();
+                return deleteModel;
+            }
+            return null;
         }
-
-        //public async Task<MessageModel> FindMessageAsync(int messageId)
-        //{
-        //    return await _context.Messages.FirstOrDefaultAsync(i => i.MessagesId == messageId);
-        //}
     }
 }

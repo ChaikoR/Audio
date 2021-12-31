@@ -46,11 +46,22 @@ namespace Blazor.Server.Controllers
                 //добавляем в БД
                 newModel = await _servicesGrpc.AddMessageAsync(messages);
             }
-            else { 
-            //обновляем
-
+            else {
+                //обновляем
+                newModel = await _servicesGrpc.UpdateMessageAsync(messages);
             }
-            return newModel;
+            return Ok(newModel);
+
+        }        
+        
+        [HttpPost]
+        [Route("DeleteMessage?id=")]
+        //[HttpDelete("{id:int}")]
+        public async Task<IActionResult> DeleteMessage(int id)
+        {
+            Messages delModel = await _servicesGrpc.DeleteMessageAsync(id);
+
+            return Ok(delModel);
 
         }
     }

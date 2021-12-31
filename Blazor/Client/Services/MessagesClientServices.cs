@@ -23,12 +23,19 @@ namespace Blazor.Client.Services
             return await _httpClient.GetFromJsonAsync<IEnumerable<Messages>>("/api/Messages");
         }
 
-        public async Task<Messages> CreateOrUpdatePost(Messages newMessages)
+        public async Task<Messages> CreateOrUpdateMessageAsync(Messages newMessages)
         {
 
              var response = await _httpClient.PostAsJsonAsync<Messages>("/api/Messages/CreateOrUpdatePost", newMessages);
              return await response.Content.ReadFromJsonAsync<Messages>();
 
+        }
+
+        public async Task<Messages> DeleteMessageAsync(int id)
+        {
+            //var response = await _httpClient.PostAsJsonAsync<int>("/api/Messages/DeleteMessage", id);
+            var response = await _httpClient.DeleteAsync($"/api/Messages/DeleteMessage/{id}");
+            return await response.Content.ReadFromJsonAsync<Messages>();
         }
     }
 }

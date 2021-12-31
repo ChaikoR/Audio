@@ -37,7 +37,24 @@ namespace GrpcService.Services
         {
             Messages addModel = new Messages();
             addModel.Name = request.Name;
-            Messages updateMessage = await _context.AddMessageAsync(addModel);
+            Messages addMessage = await _context.AddMessageAsync(addModel);
+            if (addMessage == null)
+            {
+                throw new RpcException(new Status(StatusCode.NotFound, $"Contact with ID={request.MessagesId} is not found."));
+            }
+            MessageModel messageModel = new MessageModel();
+            messageModel.MessagesId = addMessage.MessagesId;
+            messageModel.Name = addMessage.Name;
+
+            return await Task.FromResult(messageModel);
+        }
+        public override async Task<MessageModel> UpdateMessage(MessageModel request, ServerCallContext context)
+        {
+            Messages updateModel = new Messages();
+            updateModel.MessagesId=request.MessagesId;
+            updateModel.Name = request.Name;
+
+            Messages updateMessage = await _context.UpdateMessageAsync(updateModel);
             if (updateMessage == null)
             {
                 throw new RpcException(new Status(StatusCode.NotFound, $"Contact with ID={request.MessagesId} is not found."));
@@ -47,6 +64,16 @@ namespace GrpcService.Services
             messageModel.Name = updateMessage.Name;
 
             return await Task.FromResult(messageModel);
+        }
+
+        public override async Task<MessageModel> DeleteMessage(MessageId request, ServerCallContext context)
+        {
+            var model = await _context.DeleteMessageAsync(request.MessagesId);
+            
+            MessageModel delModel = new MessageModel();
+            delModel.MessagesId = model.MessagesId; 
+            delModel.Name = model.Name;
+            return await Task.FromResult(delModel);
         }
     }
 }

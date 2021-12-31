@@ -11,5 +11,7 @@ namespace Blazor.Server.Interface
     {
         Task<List<Messages>> GetAllMessagesAsync();
         Task<Messages> AddMessageAsync(Messages model);
+        Task<Messages> UpdateMessageAsync(Messages model);
+        Task<Messages> DeleteMessageAsync(int id);
     }
 }

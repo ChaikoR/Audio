@@ -19,7 +19,7 @@
     <tbody>
         @if (messages != null)
         {
-            @foreach (var message in messages)
+            @foreach (var message in messages.OrderBy(i=>i.MessagesId))
             {
                 <tr>
                     <td>@message.MessagesId</td>
@@ -30,7 +30,7 @@
                         @onclick='@(e => OpenModal(message.MessagesId,"update"))'>Редактировать</button>
                         |
                         <button type="button" class="btn btn-primary"
-                        @onclick='@(e => DeletePost(message.MessagesId))'>Удалить</button>    
+                        @onclick='@(e => DeleteMessage(message.MessagesId))'>Удалить</button>    
                     </td>
                 </tr>
             }
@@ -58,7 +58,7 @@
                 </div>*@
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary" @onclick="(e => CreateOrUpdatePost())">Сохранить</button>
+                <button type="button" class="btn btn-primary" @onclick="(e => CreateOrUpdateMessage())">Сохранить</button>
                 <button type="button" class="btn btn-secondary" @onclick="(e => CloseModal())">Закрыть</button>
             </div>
         </div>
@@ -101,35 +101,26 @@
         await _js.InvokeVoidAsync("global.closeModal", "myModal");
     }
 
-    private async Task CreateOrUpdatePost()
+    private async Task CreateOrUpdateMessage()
     {
         if (message.MessagesId == 0)
         {
-            // for adding new record
-            var newRecord = await _service.CreateOrUpdatePost(message);
+            var newRecord = await _service.CreateOrUpdateMessageAsync(message);
             messages.Insert(0, newRecord);
             await CloseModal();
         }
         else
         {
-            var updatedRecord = await _service.CreateOrUpdatePost(message);
-
-            messages = messages.Where(_ => _.MessagesId != updatedRecord.MessagesId).ToList();
-
+            var updatedRecord = await _service.CreateOrUpdateMessageAsync(message);
+            messages = messages.Where(i => i.MessagesId != updatedRecord.MessagesId).ToList();
             messages.Insert(0, updatedRecord);
             await CloseModal();
         }
     }
 
-    //private async Task DeletePost(int id)
-    //{
-    //    await _jsonPlaceHolderClient.DeletePost(id);
-    //    allposts = allposts.Where(_ => _.Id != id).ToList();
-    //}
-
-    private async Task DeletePost(int id)
+    private async Task DeleteMessage(int id)
     {
-        await CloseModal();
+        var delModel = await _service.DeleteMessageAsync(id);
+        messages = messages.Where(i => i.MessagesId != delModel.MessagesId).ToList();
     }
-
 }

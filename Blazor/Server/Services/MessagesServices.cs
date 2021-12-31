@@ -13,20 +13,6 @@ namespace Blazor.Server.Services
 {
     public class MessagesServices : IMessagesServices
     {
-        public async Task<Messages> AddMessageAsync(Messages model)
-        {
-            MessageModel messageModel = new MessageModel();
-            messageModel.Name = model.Name;
-
-            var channel = GrpcChannel.ForAddress("https://localhost:7298");
-            var client = new RemoteMessages.RemoteMessagesClient(channel);
-            var result = client.AddMessage(messageModel);
-
-            model.MessagesId = result.MessagesId;
-            model.Name = result.Name;
-            return model;
-        }
-
         public async Task<List<Messages>> GetAllMessagesAsync()
         {
 
@@ -47,6 +33,50 @@ namespace Blazor.Server.Services
             }
                 
             return messages;
+        }
+
+        public async Task<Messages> AddMessageAsync(Messages model)
+        {
+            MessageModel messageModel = new MessageModel();
+            messageModel.Name = model.Name;
+
+            var channel = GrpcChannel.ForAddress("https://localhost:7298");
+            var client = new RemoteMessages.RemoteMessagesClient(channel);
+            var result = await client.AddMessageAsync(messageModel);
+
+            model.MessagesId = result.MessagesId;
+            model.Name = result.Name;
+            return model;
+        }
+
+        public async Task<Messages> UpdateMessageAsync(Messages model)
+        {
+            MessageModel messageModel = new MessageModel();
+            messageModel.MessagesId = model.MessagesId;
+            messageModel.Name = model.Name;
+
+            var channel = GrpcChannel.ForAddress("https://localhost:7298");
+            var client = new RemoteMessages.RemoteMessagesClient(channel);
+            var result = await client.UpdateMessageAsync(messageModel);
+
+            model.MessagesId = result.MessagesId;
+            model.Name = result.Name;
+            return model;
+        }
+
+        public async Task<Messages> DeleteMessageAsync(int id) {
+            
+            MessageId messageId = new MessageId();
+            messageId.MessagesId = id;
+
+            var channel = GrpcChannel.ForAddress("https://localhost:7298");
+            var client = new RemoteMessages.RemoteMessagesClient(channel);
+            var result = await client.DeleteMessageAsync(messageId);
+
+            Messages delModel = new Messages();
+            delModel.MessagesId=result.MessagesId;
+            delModel.Name = result.Name;    
+            return delModel;
         }
     }
 }
