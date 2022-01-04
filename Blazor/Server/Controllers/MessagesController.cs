@@ -54,8 +54,8 @@ namespace Blazor.Server.Controllers
 
         }        
         
-        [HttpPost]
-        [Route("DeleteMessage?id=")]
+        [HttpDelete]
+        [Route("DeleteMessage/{id:int}")]
         //[HttpDelete("{id:int}")]
         public async Task<IActionResult> DeleteMessage(int id)
         {
