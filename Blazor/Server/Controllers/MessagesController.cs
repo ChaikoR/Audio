@@ -15,9 +15,11 @@ namespace Blazor.Server.Controllers
     public class MessagesController : ControllerBase
     {
         private readonly IMessagesServices _servicesGrpc;
-        public MessagesController(IMessagesServices servicesGrpc)
+        private readonly IWebHostEnvironment _hostingEnvironment;
+        public MessagesController(IMessagesServices servicesGrpc, IWebHostEnvironment hostingEnvironment)
         {
             _servicesGrpc = servicesGrpc;
+            _hostingEnvironment = hostingEnvironment;
         }
         
         [HttpGet]
@@ -52,8 +54,22 @@ namespace Blazor.Server.Controllers
             }
             return Ok(newModel);
 
-        }        
-        
+        }
+
+        [HttpPost]
+        [Route("Save/{id:int}")]
+        public async Task<IActionResult> Save(IFormFile file, int id)
+        {
+
+            if (file.ContentType != "audio/wav")
+            {
+                return BadRequest("Wrong file type");
+            }
+
+            return Ok("File uploaded successfully");
+
+        }
+
         [HttpDelete]
         [Route("DeleteMessage/{id:int}")]
         //[HttpDelete("{id:int}")]

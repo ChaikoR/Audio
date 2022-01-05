@@ -1,18 +1,82 @@
 ﻿@page "/counter"
+@inject IJSRuntime _js;
 
 <PageTitle>Counter</PageTitle>
 
-<h1>Counter</h1>
+<h1>Тест</h1>
 
-<p role="status">Current count: @currentCount</p>
 
-<button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
+<br/>
+<br/>
+<br/>
+
+<button class="btn @colorButton" @onclick="RecordStop">@textBatton</button>
+
+<br/>
+<br/>
+<br/>
+<br/>
+
+
+    <center>
+
+      <p><button id="record">Record</button></p>
+      <div id="sound-clip"></div>
+    </center>
+
+<section class="main-controls">
+        <div id="buttons">
+            <button class="@recordButton" disabled="@recording" @onclick=Record>Record</button>
+            <button class="stop bouton" disabled="@notRecording" @onclick=Stop>Stop</button>
+        </div>
+</section>
 
 @code {
-    private int currentCount = 0;
 
-    private void IncrementCount()
+
+
+
+    private string textBatton="Запись";
+    private string colorButton="btn-primary";
+
+    private void RecordStop()
     {
-        currentCount++;
+        if (textBatton == "Запись")
+        {
+            textBatton = "Стоп";
+            colorButton = "btn-danger";
+        }
+        else
+        {
+            textBatton = "Запись";
+            colorButton = "btn-primary";
+        }
+        
+    }
+
+
+
+
+     string recordButton = "record";
+
+    bool recording = false;
+    bool notRecording = true;
+
+
+    private async Task Record()
+    {
+
+        recordButton = "recording";
+        recording = true;
+        notRecording = false;
+        await  _js.InvokeVoidAsync("SoundJSMethods.startRecording");
+    }
+
+    private async Task Stop()
+    {
+        recordButton = "record";
+        recording = false;
+        notRecording = true;
+        await  _js.InvokeVoidAsync("SoundJSMethods.stopRecording");
     }
 }
