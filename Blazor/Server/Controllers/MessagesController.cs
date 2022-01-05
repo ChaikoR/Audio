@@ -61,7 +61,7 @@ namespace Blazor.Server.Controllers
         public async Task<IActionResult> Save(IFormFile file, int id)
         {
 
-            if (file.ContentType != "audio/wav")
+            if (file.ContentType != "audio/ogg; codecs=opus")
             {
                 return BadRequest("Wrong file type");
             }
