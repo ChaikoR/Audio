@@ -23,9 +23,11 @@ namespace Blazor.Client.Services
             return await _httpClient.GetFromJsonAsync<IEnumerable<Messages>>("/api/Messages");
         }
 
-        public async Task<Messages> CreateOrUpdateMessageAsync(Messages newMessages)
+        public async Task<Messages> CreateOrUpdateMessageAsync(Messages newMessages, int safeFile)
         {
-
+            if (safeFile == 1) {
+                newMessages.BinaryData = BitConverter.GetBytes(safeFile);
+            }
              var response = await _httpClient.PostAsJsonAsync<Messages>("/api/Messages/CreateOrUpdatePost", newMessages);
              return await response.Content.ReadFromJsonAsync<Messages>();
 

@@ -1,4 +1,5 @@
-﻿using Grpc.Core;
+﻿using Google.Protobuf;
+using Grpc.Core;
 using GrpcService.Interface;
 using GrpcService.Models;
 
@@ -37,6 +38,11 @@ namespace GrpcService.Services
         {
             Messages addModel = new Messages();
             addModel.Name = request.Name;
+            if (request.BinaryData != null) {
+                addModel.BinaryData = ByteString.FromStream(request.BinaryData);
+            }
+            
+
             Messages addMessage = await _context.AddMessageAsync(addModel);
             if (addMessage == null)
             {

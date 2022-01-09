@@ -7,14 +7,12 @@
 <PageTitle>Index</PageTitle>
 
 
-<center>
 
-      <p><button id="record">Record</button></p>
-      <div id="sound-clip"></div>
-    </center>
 
 
 <button class="btn btn-primary" @onclick='@(e => OpenModal(0,"add"))'>Добавить сообщение</button>
+<br/><br/>
+
 <table class="table table-striped">
     <thead>
         <tr>
@@ -58,12 +56,27 @@
             <div class="modal-body">
                 <div class="form-group">
                     <label for="txtTitle">Название сообщения</label>
-                    <input type="text" class="form-control" id="txtTitle" @bind="message.Name">
+                    <input type="text" class="form-control" @bind="message.Name">
                 </div>
-@*                <div class="form-group">
-                    <label for="txtDescription">Description</label>
-                    <input type="text" class="form-control" id="txtDescription" @bind="payload.BinaryData">
-                </div>*@
+                <div class="form-group">
+                    <input type="hidden" class="form-control" id="safeFile" @bind="safeFile" >
+                </div>
+
+                
+                    <div class="form-group">
+                    <center>
+                      <div id="sound-clip"></div>
+                    </center>
+                    <br/><br/>
+                        <section class="main-controls">
+                                <div id="buttons">
+                                    <button class="@recordButton" disabled="@recording" @onclick=Record>Record</button>
+                                    <button class="stop bouton" disabled="@notRecording" @onclick=Stop>Stop</button>
+                                </div>
+                                <button @onclick="(e => Del())">Del</button>
+                        </section>
+
+                     </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-primary" @onclick="(e => CreateOrUpdateMessage())">Сохранить</button>
@@ -79,6 +92,7 @@
     private List<Messages>? messages { get; set; }
     private Messages message = new Messages();
     string formTitle = "";
+    public int safeFile=0;
 
     [Inject]
     public IMessagesClientServices? MessagesClientServices { get; set; }
@@ -113,13 +127,13 @@
     {
         if (message.MessagesId == 0)
         {
-            var newRecord = await _service.CreateOrUpdateMessageAsync(message);
+            var newRecord = await _service.CreateOrUpdateMessageAsync(message, safeFile);
             messages.Insert(0, newRecord);
             await CloseModal();
         }
         else
         {
-            var updatedRecord = await _service.CreateOrUpdateMessageAsync(message);
+            var updatedRecord = await _service.CreateOrUpdateMessageAsync(message, safeFile);
             messages = messages.Where(i => i.MessagesId != updatedRecord.MessagesId).ToList();
             messages.Insert(0, updatedRecord);
             await CloseModal();
@@ -130,5 +144,36 @@
     {
         var delModel = await _service.DeleteMessageAsync(id);
         messages = messages.Where(i => i.MessagesId != delModel.MessagesId).ToList();
+    }
+
+    string recordButton = "record";
+
+    bool recording = false;
+    bool notRecording = true;
+
+
+    private async Task Record()
+    {
+
+        recordButton = "recording";
+        recording = true;
+        notRecording = false;
+        await  _js.InvokeVoidAsync("SoundJSMethods.startRecording");
+    }
+
+    private async Task Stop()
+    {
+        recordButton = "record";
+        recording = false;
+        notRecording = true;
+        safeFile = 1;
+        await  _js.InvokeVoidAsync("SoundJSMethods.stopRecording");
+    }    
+    
+    
+    private async Task Del()
+    {
+        safeFile = 0;
+        await  _js.InvokeVoidAsync("SoundJSMethods.delRecording");
     }
 }

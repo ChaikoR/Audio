@@ -1,5 +1,6 @@
 ﻿using Blazor.Server.Interface;
 using Blazor.Shared.Models;
+using Google.Protobuf;
 using Grpc.Core;
 using Grpc.Net.Client;
 using GrpcService;
@@ -39,6 +40,10 @@ namespace Blazor.Server.Services
         {
             MessageModel messageModel = new MessageModel();
             messageModel.Name = model.Name;
+            if (model.BinaryData != null) {
+                messageModel.BinaryData = ByteString.CopyFrom(model.BinaryData);
+            }
+           
 
             var channel = GrpcChannel.ForAddress("https://localhost:7298");
             var client = new RemoteMessages.RemoteMessagesClient(channel);
@@ -46,6 +51,7 @@ namespace Blazor.Server.Services
 
             model.MessagesId = result.MessagesId;
             model.Name = result.Name;
+            //model.BinaryData = result.BinaryData;
             return model;
         }
 

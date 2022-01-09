@@ -9,7 +9,7 @@ namespace GrpcService.Models
         //[DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int MessagesId { get; set; }
         public string? Name { get; set; }
-        //public byte[]? BinaryData { get; set; }
+        public byte[]? BinaryData { get; set; }
     }
 }
 

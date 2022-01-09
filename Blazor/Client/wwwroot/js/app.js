@@ -34,10 +34,33 @@ if (navigator.mediaDevices) {
 
             // При остановки записи, создаем пустой аудиоклип.
             mediaRecorder.onstop = (event) => {
-                const audio = new Audio();
+
+                const soundClips = document.querySelector('#sound-clip');
+
+                //const audio = new Audio();
+
+                
+                
+                const clipContainer = document.createElement('article');
+                const audio = document.createElement('audio');
                 audio.setAttribute("controls", "");
-                $("#sound-clip").append(audio);
-                $("#sound-clip").append("<br />");
+                
+
+                //const deleteButton = document.createElement('button');
+                clipContainer.classList.add('clip');
+                clipContainer.setAttribute('id', 'plaer');
+
+                //deleteButton.textContent = 'Delete';
+               // deleteButton.className = 'delete';
+                
+                soundClips.append(audio);
+               // soundClips.append(deleteButton);
+
+                clipContainer.appendChild(audio);
+
+               // clipContainer.appendChild(deleteButton);
+                soundClips.appendChild(clipContainer);
+                
 
                 // Combine the audio chunks into a blob, then point the empty audio clip to that blob.
                 const blob = new Blob(chunks,
@@ -46,15 +69,26 @@ if (navigator.mediaDevices) {
                     });
                 audio.src = window.URL.createObjectURL(blob);
 
+                document.getElementById('safeFile').value = 1;
+
+                ////добавляем скрытое поле в форму
+                //const inputTxt = document.createElement('input');
+                //inputTxt.setAttribute("type", "hidden");
+                //inputTxt.setAttribute("id", "BinaryData");
+                //inputTxt.setAttribute("name", "BinaryData");
+                //inputTxt.setAttribute("value", window.URL.createObjectURL(blob));
+                //soundClips.append(inputTxt);
+
                 //Отправляем файл на API
                 var filename = "sound";
                 let fd = new FormData();
+
                 fd.append("file", blob, filename);
                 var xhr = new XMLHttpRequest();
                 //xhr.addEventListener("load", transferComplete);
                 //xhr.addEventListener("error", transferFailed)
                 //xhr.addEventListener("abort", transferFailed)
-                xhr.open("POST", "https://localhost:7029/api/Messages/Save/1", true);
+                xhr.open("POST", "https://localhost:7029/api/Messages/Save", true);
                 xhr.send(fd);
 
 
@@ -70,6 +104,16 @@ if (navigator.mediaDevices) {
 
                 // Очищаем буфер для новых записей.
                 chunks = [];
+
+                //deleteButton.onclick = function (event) {
+                    
+                //    let evtTgt = event.target;
+                //    evtTgt.parentNode.parentNode.removeChild(evtTgt.parentNode);
+                //    document.getElementById("buttons").style.display = "block";
+                //    document.getElementById('safeFile').value = 0;
+                    
+                //}
+
             };
 
             window.SoundJSMethods = {
@@ -82,7 +126,14 @@ if (navigator.mediaDevices) {
                 stopRecording: function (element) {
                     mediaRecorder.stop();
                     recording = false;
+                    document.getElementById("buttons").style.display = "none";
                 },
+
+                delRecording: function () {
+                    document.getElementById('plaer').remove();
+                    document.getElementById("buttons").style.display = "block";
+                },
+
 
 
             };

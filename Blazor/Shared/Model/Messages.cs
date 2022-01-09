@@ -7,6 +7,8 @@ namespace Blazor.Shared.Models
         [Key]
         public int MessagesId { get; set; }
         public string? Name { get; set; }
-        //public byte[]? BinaryData { get; set; }
+        
+        public byte[]? BinaryData { get; set; }
+        //public string? BinaryData { get; set; }
     }
 }

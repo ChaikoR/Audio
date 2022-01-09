@@ -29,5 +29,9 @@
     <Protobuf Include="Protos\messages.proto" GrpcServices="Client" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Files\" />
+  </ItemGroup>
+
 
 </Project>
