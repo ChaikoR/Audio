@@ -35,8 +35,8 @@ namespace GrpcService.Services
                 {
                     MessagesId = message.MessagesId,
                     Name = message.Name,
-                    BinaryData = ByteToByteString(message.BinaryData)
-            });
+                    BinaryData = message.BinaryData != null ? ByteToByteString(message.BinaryData) : null,
+                });
             }
             //messages = dbModel.Select(x => new MessageModel
             //{
@@ -114,7 +114,7 @@ namespace GrpcService.Services
             if (arrBytes != null) {
                 return ByteString.CopyFrom(arrBytes);
             }
-            return null;
+            return ByteString.CopyFrom(null);
         }
     }
 }
