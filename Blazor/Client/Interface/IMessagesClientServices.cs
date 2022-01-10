@@ -7,5 +7,6 @@ namespace Blazor.Client.Interface
             Task<IEnumerable<Messages>> GetAllMessagesAsync();
             Task<Messages> CreateOrUpdateMessageAsync(Messages newMessages, int safeFile);
             Task<Messages> DeleteMessageAsync(int Id);
+            Task DeleteAudioFileAsync(int id);
     }
 }

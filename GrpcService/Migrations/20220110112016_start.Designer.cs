@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GrpcService.Migrations
 {
     [DbContext(typeof(MessagesDBConext))]
-    [Migration("20211229132212_addFileName")]
-    partial class addFileName
+    [Migration("20220110112016_start")]
+    partial class start
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

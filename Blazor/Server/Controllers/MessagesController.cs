@@ -89,13 +89,21 @@ namespace Blazor.Server.Controllers
 
         [HttpDelete]
         [Route("DeleteMessage/{id:int}")]
-        //[HttpDelete("{id:int}")]
         public async Task<IActionResult> DeleteMessage(int id)
         {
             Messages delModel = await _servicesGrpc.DeleteMessageAsync(id);
 
             return Ok(delModel);
 
+        }
+
+
+        [HttpDelete]
+        [Route("DeleteAudioFile/{id:int}")]
+        public async Task<IActionResult> DeleteAudioFile(int id)
+        {
+            await _servicesGrpc.DeleteAudioFileAsync(id);
+            return Ok();
         }
     }
 }

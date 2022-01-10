@@ -35,9 +35,13 @@ namespace Blazor.Client.Services
 
         public async Task<Messages> DeleteMessageAsync(int id)
         {
-            //var response = await _httpClient.PostAsJsonAsync<int>("/api/Messages/DeleteMessage", id);
             var response = await _httpClient.DeleteAsync($"/api/Messages/DeleteMessage/{id}");
             return await response.Content.ReadFromJsonAsync<Messages>();
+        }
+
+        public async Task DeleteAudioFileAsync(int id)
+        {
+            await _httpClient.DeleteAsync($"/api/Messages/DeleteAudioFile/{id}");
         }
     }
 }

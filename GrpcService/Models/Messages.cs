@@ -8,7 +8,7 @@ namespace GrpcService.Models
         //[Key]
         //[DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int MessagesId { get; set; }
-        public string? Name { get; set; }
+        public string Name { get; set; } = string.Empty;
         public byte[]? BinaryData { get; set; }
     }
 }

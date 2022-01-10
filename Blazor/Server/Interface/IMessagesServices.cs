@@ -13,5 +13,6 @@ namespace Blazor.Server.Interface
         Task<Messages> AddMessageAsync(Messages model);
         Task<Messages> UpdateMessageAsync(Messages model);
         Task<Messages> DeleteMessageAsync(int id);
+        Task DeleteAudioFileAsync(int id);
     }
 }

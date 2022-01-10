@@ -29,6 +29,7 @@ namespace Blazor.Server.Services
                     {
                         MessagesId = item.MessagesId,
                         Name = item.Name,
+                        BinaryData = item.BinaryData.ToByteArray(),
                     }
                 );
             }
@@ -52,6 +53,7 @@ namespace Blazor.Server.Services
             model.MessagesId = result.MessagesId;
             model.Name = result.Name;
             //model.BinaryData = result.BinaryData;
+
             return model;
         }
 
@@ -83,6 +85,16 @@ namespace Blazor.Server.Services
             delModel.MessagesId=result.MessagesId;
             delModel.Name = result.Name;    
             return delModel;
+        }
+
+        public async Task DeleteAudioFileAsync(int id) {
+
+            MessageId messageId = new MessageId();
+            messageId.MessagesId = id;
+
+            var channel = GrpcChannel.ForAddress("https://localhost:7298");
+            var client = new RemoteMessages.RemoteMessagesClient(channel);
+            var result = await client.DeleteAudioFileAsync(messageId);
         }
     }
 }

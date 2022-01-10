@@ -65,7 +65,14 @@
                 
                     <div class="form-group">
                     <center>
-                      <div id="sound-clip"></div>
+                      <div id="sound-clip">
+                            @if (message.BinaryData != null)
+                            {
+                                <article class="clip" id="plaer">
+                                    <audio controls="" src="data:audio/ogg; codecs=opu;base64,@System.Convert.ToBase64String(message.BinaryData)"></audio>
+                                </article>
+                            }
+                        </div>
                     </center>
                     <br/><br/>
                         <section class="main-controls">
@@ -73,7 +80,7 @@
                                     <button class="@recordButton" disabled="@recording" @onclick=Record>Record</button>
                                     <button class="stop bouton" disabled="@notRecording" @onclick=Stop>Stop</button>
                                 </div>
-                                <button @onclick="(e => Del())">Del</button>
+                                <button @onclick="(e => Del(message.MessagesId))">Del</button>
                         </section>
 
                      </div>
@@ -171,9 +178,10 @@
     }    
     
     
-    private async Task Del()
+    private async Task Del(int id)
     {
         safeFile = 0;
+        await _service.DeleteAudioFileAsync(id);
         await  _js.InvokeVoidAsync("SoundJSMethods.delRecording");
     }
 }

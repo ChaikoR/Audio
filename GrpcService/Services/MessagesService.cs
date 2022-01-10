@@ -2,6 +2,8 @@
 using Grpc.Core;
 using GrpcService.Interface;
 using GrpcService.Models;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Text;
 
 namespace GrpcService.Services
 {
@@ -19,18 +21,33 @@ namespace GrpcService.Services
         {
             List<MessageModel> messages = new List<MessageModel>();
 
-            var dbModel = await _context.GetAllAsync();
-            
-                foreach (var message in dbModel)
+            List<Messages> dbModel = await _context.GetAllAsync();
+
+            foreach (var message in dbModel)
+            {
+                //Byte[]? binaryData =null;
+                //if (message.BinaryData != null)
+                //{
+                //    binaryData = ByteToByteString(message.BinaryData);
+                //}
+
+                messages.Add(new MessageModel
                 {
-                    messages.Add(new MessageModel 
-                    {
-                        MessagesId=message.MessagesId,
-                        Name=message.Name
-                    });
-                }
+                    MessagesId = message.MessagesId,
+                    Name = message.Name,
+                    BinaryData = ByteToByteString(message.BinaryData)
+            });
+            }
+            //messages = dbModel.Select(x => new MessageModel
+            //{
+            //    MessagesId = x.MessagesId,
+            //    Name = x.Name,
+            //    BinaryData = x?.BinaryData : null, ByteToByteString(x.BinaryData)
+            //}).ToList(); 
+
             MessagesList replyModel = new MessagesList();
             replyModel.Messages.AddRange(messages);
+
             return replyModel;
         }
 
@@ -39,7 +56,7 @@ namespace GrpcService.Services
             Messages addModel = new Messages();
             addModel.Name = request.Name;
             if (request.BinaryData != null) {
-                addModel.BinaryData = ByteString.FromStream(request.BinaryData);
+                addModel.BinaryData = ByteStringToByte(request.BinaryData);
             }
             
 
@@ -80,6 +97,24 @@ namespace GrpcService.Services
             delModel.MessagesId = model.MessagesId; 
             delModel.Name = model.Name;
             return await Task.FromResult(delModel);
+        }
+
+        public override async Task<MessagesRequest> DeleteAudioFile(MessageId request, ServerCallContext context)
+        {
+            await _context.DeleteAudioFileAsync(request.MessagesId);
+            return await Task.FromResult(new MessagesRequest());
+        }
+        public byte[] ByteStringToByte(ByteString bytes) {
+            byte[]  ret = bytes.ToByteArray();
+            return ret;
+        }
+
+        public ByteString ByteToByteString(byte[] arrBytes)
+        {
+            if (arrBytes != null) {
+                return ByteString.CopyFrom(arrBytes);
+            }
+            return null;
         }
     }
 }
