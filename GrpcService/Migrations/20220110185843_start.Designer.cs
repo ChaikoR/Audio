@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GrpcService.Migrations
 {
     [DbContext(typeof(MessagesDBConext))]
-    [Migration("20220110112016_start")]
+    [Migration("20220110185843_start")]
     partial class start
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -36,6 +36,7 @@ namespace GrpcService.Migrations
                         .HasColumnType("varbinary(max)");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("MessagesId");

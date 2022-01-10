@@ -32,8 +32,9 @@ namespace Blazor.Server.Controllers
             }
             catch (Exception)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError,
-                    "Error retrieving data from the database");
+                return BadRequest();
+                //return StatusCode(StatusCodes.Status500InternalServerError,
+                //    "Ошибка БД");
             }
         }
 

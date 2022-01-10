@@ -30,12 +30,12 @@ namespace GrpcService.Services
                 //{
                 //    binaryData = ByteToByteString(message.BinaryData);
                 //}
-
+                
                 messages.Add(new MessageModel
                 {
                     MessagesId = message.MessagesId,
                     Name = message.Name,
-                    BinaryData = message.BinaryData != null ? ByteToByteString(message.BinaryData) : null,
+                    BinaryData = message.BinaryData != null ? ByteToByteString(message.BinaryData) : ByteToByteString(null),
                 });
             }
             //messages = dbModel.Select(x => new MessageModel
@@ -109,7 +109,7 @@ namespace GrpcService.Services
             return ret;
         }
 
-        public ByteString ByteToByteString(byte[] arrBytes)
+        public ByteString ByteToByteString(byte[]? arrBytes)
         {
             if (arrBytes != null) {
                 return ByteString.CopyFrom(arrBytes);

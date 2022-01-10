@@ -21,7 +21,7 @@ namespace Blazor.Server.Services
 
             var channel = GrpcChannel.ForAddress("https://localhost:7298");
             var client = new RemoteMessages.RemoteMessagesClient(channel);
-            var result = client.GetMessages(new MessagesRequest(), new Grpc.Core.Metadata());
+            var result = await client.GetMessagesAsync(new MessagesRequest(), new Grpc.Core.Metadata());
 
             foreach (var item in result.Messages)
             {
@@ -59,7 +59,7 @@ namespace Blazor.Server.Services
 
         public async Task<Messages> UpdateMessageAsync(Messages model)
         {
-            MessageModel messageModel = new MessageModel();
+            MessageModel messageModel = new();
             messageModel.MessagesId = model.MessagesId;
             messageModel.Name = model.Name;
 
@@ -74,14 +74,14 @@ namespace Blazor.Server.Services
 
         public async Task<Messages> DeleteMessageAsync(int id) {
             
-            MessageId messageId = new MessageId();
+            MessageId messageId = new();
             messageId.MessagesId = id;
 
             var channel = GrpcChannel.ForAddress("https://localhost:7298");
             var client = new RemoteMessages.RemoteMessagesClient(channel);
             var result = await client.DeleteMessageAsync(messageId);
 
-            Messages delModel = new Messages();
+            Messages delModel = new();
             delModel.MessagesId=result.MessagesId;
             delModel.Name = result.Name;    
             return delModel;
@@ -89,12 +89,12 @@ namespace Blazor.Server.Services
 
         public async Task DeleteAudioFileAsync(int id) {
 
-            MessageId messageId = new MessageId();
+            MessageId messageId = new();
             messageId.MessagesId = id;
 
             var channel = GrpcChannel.ForAddress("https://localhost:7298");
             var client = new RemoteMessages.RemoteMessagesClient(channel);
-            var result = await client.DeleteAudioFileAsync(messageId);
+            await client.DeleteAudioFileAsync(messageId);
         }
     }
 }
