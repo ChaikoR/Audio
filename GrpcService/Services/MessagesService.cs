@@ -25,12 +25,6 @@ namespace GrpcService.Services
 
             foreach (var message in dbModel)
             {
-                //Byte[]? binaryData =null;
-                //if (message.BinaryData != null)
-                //{
-                //    binaryData = ByteToByteString(message.BinaryData);
-                //}
-                
                 messages.Add(new MessageModel
                 {
                     MessagesId = message.MessagesId,
@@ -38,12 +32,6 @@ namespace GrpcService.Services
                     BinaryData = message.BinaryData != null ? ByteToByteString(message.BinaryData) : ByteToByteString(null),
                 });
             }
-            //messages = dbModel.Select(x => new MessageModel
-            //{
-            //    MessagesId = x.MessagesId,
-            //    Name = x.Name,
-            //    BinaryData = x?.BinaryData : null, ByteToByteString(x.BinaryData)
-            //}).ToList(); 
 
             MessagesList replyModel = new MessagesList();
             replyModel.Messages.AddRange(messages);
@@ -76,6 +64,7 @@ namespace GrpcService.Services
             Messages updateModel = new Messages();
             updateModel.MessagesId=request.MessagesId;
             updateModel.Name = request.Name;
+            updateModel.BinaryData = ByteStringToByte(request.BinaryData);
 
             Messages updateMessage = await _context.UpdateMessageAsync(updateModel);
             if (updateMessage == null)
@@ -111,10 +100,14 @@ namespace GrpcService.Services
 
         public ByteString ByteToByteString(byte[]? arrBytes)
         {
-            if (arrBytes != null) {
-                return ByteString.CopyFrom(arrBytes);
+            if (arrBytes != null)
+            {
+               return ByteString.CopyFrom(arrBytes);
             }
-            return ByteString.CopyFrom(null);
+            else 
+            {
+               return ByteString.Empty;
+            }
         }
     }
 }

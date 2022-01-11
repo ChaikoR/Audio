@@ -62,3 +62,33 @@ a, .btn-link {
     .blazor-error-boundary::after {
         content: "An error has occurred."
     }
+
+
+.collapsable-panel {
+    border: 1px solid #eee;
+    padding: 25px;
+    background-color: white;
+    overflow: hidden;
+}
+
+.collapsable .title {
+    display: table-cell
+}
+
+.collapsable .value {
+    display: table-cell;
+    text-align: right;
+}
+
+audio {
+    border: solid 2px #ced4da;
+    background-color: #f1f3f4;
+}
+
+.displayNone {
+    display: none;
+}
+
+.displayBlock {
+    display: block;
+}

@@ -1,80 +1,43 @@
 ﻿@page "/counter"
 @inject IJSRuntime _js;
 
-<PageTitle>Counter</PageTitle>
+<PageTitle>Accordion</PageTitle>
 
-<h1>Тест</h1>
-
-
-<br/>
-<br/>
-<br/>
-
-<button class="btn @colorButton" @onclick="RecordStop">@textBatton</button>
-
-<br/>
-<br/>
-<br/>
-<br/>
-
-
-    <center>
-      <div id="sound-clip"></div>
-    </center>
-
-<section class="main-controls">
-        <div id="buttons">
-            <button class="@recordButton" disabled="@recording" @onclick=Record>Record</button>
-            <button class="stop bouton" disabled="@notRecording" @onclick=Stop>Stop</button>
-        </div>
-</section>
-
-@code {
-
-
-
-
-    private string textBatton="Запись";
-    private string colorButton="btn-primary";
-
-    private void RecordStop()
-    {
-        if (textBatton == "Запись")
+<div class="collapsable">
+   @* <div class="title" @onclick="@(()=>collapse1Visible = !collapse1Visible)">*@
+    <div class="title" @onclick="@Toggle">
+        @if (Collapsed)
         {
-            textBatton = "Стоп";
-            colorButton = "btn-danger";
+            <span class="oi oi-chevron-right mr-1"></span>
         }
         else
         {
-            textBatton = "Запись";
-            colorButton = "btn-primary";
+            <span class="oi oi-chevron-bottom mr-1"></span>
         }
-        
-    }
+        Настройки
+    </div>
 
+    <div class="value">
+        <h4><span class="badge badge-success">Настройки</span></h4>
+    </div>
 
-
-
-     string recordButton = "record";
-
-    bool recording = false;
-    bool notRecording = true;
-
-
-    private async Task Record()
+</div>
+ 
+@if (!Collapsed)
+{
+    <div class="collapsable-panel">
+        @ChildContent
+    </div>
+}
+ 
+@code {
+    [Parameter] public RenderFragment ChildContent { get; set; }
+    [Parameter] public bool Collapsed { get; set; }
+    [Parameter] public string Title { get; set; }
+    [Parameter] public string Value { get; set; }
+ 
+    void Toggle()
     {
-
-        recordButton = "recording";
-        recording = true;
-        notRecording = false;
-        await  _js.InvokeVoidAsync("SoundJSMethods.startRecording");
-    }
-
-    private async Task Stop()
-    {
-        recordButton = "record";
-        recording = false;
-        notRecording = true;
-        await  _js.InvokeVoidAsync("SoundJSMethods.stopRecording");
+        Collapsed = !Collapsed;
     }
 }

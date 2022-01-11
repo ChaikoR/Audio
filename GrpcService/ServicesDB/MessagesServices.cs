@@ -42,7 +42,12 @@ namespace GrpcService.ServicesDB
             
             updateModel.MessagesId = model.MessagesId;
             updateModel.Name = model.Name;
-            
+            updateModel.BinaryData = model.BinaryData;
+
+            await _context.SaveChangesAsync();
+
+
+
             return updateModel;
         }
 

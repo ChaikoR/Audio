@@ -25,11 +25,20 @@ namespace Blazor.Server.Services
 
             foreach (var item in result.Messages)
             {
+               byte[]? bData;
+                if (item.BinaryData == ByteString.Empty)
+                {
+                    bData = null;
+                }
+                else
+                {
+                    bData = item.BinaryData.ToByteArray();
+                }
                 messages.Add(new Messages
                     {
                         MessagesId = item.MessagesId,
                         Name = item.Name,
-                        BinaryData = item.BinaryData.ToByteArray(),
+                        BinaryData = bData,
                     }
                 );
             }
@@ -62,6 +71,10 @@ namespace Blazor.Server.Services
             MessageModel messageModel = new();
             messageModel.MessagesId = model.MessagesId;
             messageModel.Name = model.Name;
+            if (model.BinaryData != null)
+            {
+                messageModel.BinaryData = ByteString.CopyFrom(model.BinaryData);
+            }
 
             var channel = GrpcChannel.ForAddress("https://localhost:7298");
             var client = new RemoteMessages.RemoteMessagesClient(channel);

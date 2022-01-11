@@ -7,7 +7,7 @@
 <PageTitle>Index</PageTitle>
 
 
-
+<h1>@safeFile</h1>
 
 
 <button class="btn btn-primary" @onclick='@(e => OpenModal(0,"add"))'>Добавить сообщение</button>
@@ -18,7 +18,7 @@
         <tr>
             <th scope="col">Id</th>
             <th scope="col">Название сообщения</th>
-            @*<th scope="col">Сообщение</th>*@
+            <th scope="col">Сообщение</th>
             <th scope="col">Операции</th>
         </tr>
     </thead>
@@ -30,12 +30,19 @@
                 <tr>
                     <td>@message.MessagesId</td>
                     <td>@message.Name</td>
-                    @*<td>@message.BinaryData</td>*@
                     <td>
-                        <button type="button" class="btn btn-primary"
+                        @if (message.BinaryData != null)
+                        {
+                          <article class="clip">
+                            <audio controls="" src="data:audio/ogg; codecs=opu;base64,@System.Convert.ToBase64String(message.BinaryData)"></audio>
+                          </article>
+                        }
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-secondary"
                         @onclick='@(e => OpenModal(message.MessagesId,"update"))'>Редактировать</button>
                         |
-                        <button type="button" class="btn btn-primary"
+                        <button type="button" class="btn btn-danger"
                         @onclick='@(e => DeleteMessage(message.MessagesId))'>Удалить</button>    
                     </td>
                 </tr>
@@ -49,8 +56,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">@formTitle</h5>
-                <button type="button" class="close" @onclick="(e => CloseModal())" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
+                <button type="button" disabled="@recording" class="btn-close" @onclick="(e => CloseModal())" aria-label="Close">
                 </button>
             </div>
             <div class="modal-body">
@@ -64,30 +70,33 @@
 
                 
                     <div class="form-group">
-                    <center>
-                      <div id="sound-clip">
+                    <br/><br/>
+                        <center>
+                        <div id="sound-clip">
                             @if (message.BinaryData != null)
                             {
                                 <article class="clip" id="plaer">
                                     <audio controls="" src="data:audio/ogg; codecs=opu;base64,@System.Convert.ToBase64String(message.BinaryData)"></audio>
                                 </article>
+                                <button type="button" id="delRecord" style="display: block;" class="align-content-center btn btn-danger" @onclick="(e => Del(message.MessagesId))">Удалить запись</button>
                             }
                         </div>
-                    </center>
-                    <br/><br/>
                         <section class="main-controls">
+                            @if (message.BinaryData == null)
+                            {
                                 <div id="buttons">
-                                    <button class="@recordButton" disabled="@recording" @onclick=Record>Record</button>
-                                    <button class="stop bouton" disabled="@notRecording" @onclick=Stop>Stop</button>
+                                    <button type="button" class="btn @btnRecord @recordButton" disabled="@recording" @onclick=Record>Записать</button>
+                                    <button type="button" class="btn btn-success stop bouton" disabled="@notRecording" @onclick=Stop>Остановить</button>
                                 </div>
-                                <button @onclick="(e => Del(message.MessagesId))">Del</button>
+                            }
+                                <button type="button" id="delRecord" style="display: none;" class="align-content-center btn btn-danger" @onclick="(e => Del(message.MessagesId))">Удалить запись</button>
                         </section>
-
+                        </center>
                      </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary" @onclick="(e => CreateOrUpdateMessage())">Сохранить</button>
-                <button type="button" class="btn btn-secondary" @onclick="(e => CloseModal())">Закрыть</button>
+                <button type="button" disabled="@recording" class="btn btn-primary" @onclick="(e => CreateOrUpdateMessage())">Сохранить</button>
+                <button type="button" disabled="@recording" class="btn btn-secondary" @onclick="(e => CloseModal())">Закрыть</button>
             </div>
         </div>
     </div>
@@ -128,6 +137,7 @@
     private async Task CloseModal()
     {
         await _js.InvokeVoidAsync("global.closeModal", "myModal");
+        await _js.InvokeVoidAsync("SoundJSMethods.close");
     }
 
     private async Task CreateOrUpdateMessage()
@@ -145,6 +155,7 @@
             messages.Insert(0, updatedRecord);
             await CloseModal();
         }
+        await  _js.InvokeVoidAsync("SoundJSMethods.saveMessege");
     }
 
     private async Task DeleteMessage(int id)
@@ -154,7 +165,7 @@
     }
 
     string recordButton = "record";
-
+    string btnRecord = "btn-warning";
     bool recording = false;
     bool notRecording = true;
 
@@ -163,14 +174,17 @@
     {
 
         recordButton = "recording";
+        btnRecord = "btn-danger";
         recording = true;
         notRecording = false;
+
         await  _js.InvokeVoidAsync("SoundJSMethods.startRecording");
     }
 
     private async Task Stop()
     {
         recordButton = "record";
+        btnRecord = "btn-warning";
         recording = false;
         notRecording = true;
         safeFile = 1;

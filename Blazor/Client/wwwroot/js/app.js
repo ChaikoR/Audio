@@ -118,6 +118,22 @@ if (navigator.mediaDevices) {
 
             window.SoundJSMethods = {
 
+                //startRecording: function () {
+                //    mediaRecorder.start();
+                //    recording = true;
+                //},
+
+                //stopRecording: function (element) {
+                //    mediaRecorder.stop();
+                //    recording = false;
+                //    document.getElementById("buttons").style.display = "none";
+                //},
+
+                //delRecording: function () {
+                //    document.getElementById('plaer').remove();
+                //    document.getElementById("buttons").style.display = "block";
+                //},
+
                 startRecording: function () {
                     mediaRecorder.start();
                     recording = true;
@@ -127,11 +143,30 @@ if (navigator.mediaDevices) {
                     mediaRecorder.stop();
                     recording = false;
                     document.getElementById("buttons").style.display = "none";
+                    document.getElementById("delRecord").style.display = "block";
                 },
 
                 delRecording: function () {
-                    document.getElementById('plaer').remove();
-                    document.getElementById("buttons").style.display = "block";
+                    if (document.getElementById('plaer')) {
+                        document.getElementById('plaer').remove();
+                    }
+                    //document.getElementById("buttons").classList.remove("displayNone");
+                    document.getElementById("delRecord").style.display = "none";
+                },
+                saveMessege: function () {
+                    if (document.getElementById('plaer')) {
+                        document.getElementById('plaer').remove();
+                    }
+                    //document.getElementById("buttons").classList.remove("displayNone");
+                    document.getElementById("delRecord").style.display = "none";
+                },
+                close: function () {
+                    if (document.getElementById('plaer')) {
+                        document.getElementById('plaer').remove();
+                    }
+                    //document.getElementById("buttons").classList.remove("displayNone");
+                    //document.getElementById("buttons").classList.add("displayNone");
+                    document.getElementById("delRecord").style.display = "none";
                 },
 
 
