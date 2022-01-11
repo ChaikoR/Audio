@@ -150,22 +150,21 @@ if (navigator.mediaDevices) {
                     if (document.getElementById('plaer')) {
                         document.getElementById('plaer').remove();
                     }
-                    //document.getElementById("buttons").classList.remove("displayNone");
+                    document.getElementById("buttons").style.display = "block";
                     document.getElementById("delRecord").style.display = "none";
                 },
                 saveMessege: function () {
                     if (document.getElementById('plaer')) {
                         document.getElementById('plaer').remove();
                     }
-                    //document.getElementById("buttons").classList.remove("displayNone");
+                    document.getElementById("buttons").style.display = "block";
                     document.getElementById("delRecord").style.display = "none";
                 },
                 close: function () {
                     if (document.getElementById('plaer')) {
                         document.getElementById('plaer').remove();
                     }
-                    //document.getElementById("buttons").classList.remove("displayNone");
-                    //document.getElementById("buttons").classList.add("displayNone");
+                    document.getElementById("buttons").style.display = "block";
                     document.getElementById("delRecord").style.display = "none";
                 },
 

@@ -11,7 +11,8 @@
 
 
 <button class="btn btn-primary" @onclick='@(e => OpenModal(0,"add"))'>Добавить сообщение</button>
-<br/><br/>
+<br />
+<br />
 
 <table class="table table-striped">
     <thead>
@@ -25,28 +26,46 @@
     <tbody>
         @if (messages != null)
         {
-            @foreach (var message in messages.OrderBy(i=>i.MessagesId))
+            @if (messages.Count == 0)
             {
-                <tr>
-                    <td>@message.MessagesId</td>
-                    <td>@message.Name</td>
-                    <td>
-                        @if (message.BinaryData != null)
-                        {
-                          <article class="clip">
-                            <audio controls="" src="data:audio/ogg; codecs=opu;base64,@System.Convert.ToBase64String(message.BinaryData)"></audio>
-                          </article>
-                        }
-                    </td>
-                    <td>
-                        <button type="button" class="btn btn-secondary"
-                        @onclick='@(e => OpenModal(message.MessagesId,"update"))'>Редактировать</button>
-                        |
-                        <button type="button" class="btn btn-danger"
-                        @onclick='@(e => DeleteMessage(message.MessagesId))'>Удалить</button>    
-                    </td>
-                </tr>
+                <tr><td colspan="4">none items</td></tr>
+
             }
+            else
+            {
+                @foreach (var message in messages.OrderBy(i => i.MessagesId))
+                {
+                    <tr>
+                        <td>@message.MessagesId</td>
+                        <td>@message.Name</td>
+                        <td>
+                            @if (message.BinaryData != null)
+                            {
+                                <article class="clip">
+                                    <audio controls="" src="data:audio/ogg; codecs=opu;base64,@System.Convert.ToBase64String(message.BinaryData)"></audio>
+                                </article>
+                            }
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-secondary"
+                        @onclick='@(e => OpenModal(message.MessagesId,"update"))'>
+                                Редактировать
+                            </button>
+                            |
+                            <button type="button" class="btn btn-danger"
+                        @onclick='@(e => DeleteMessage(message.MessagesId))'>
+                                Удалить
+                            </button>
+                        </td>
+                    </tr>
+                }
+            }
+
+        }
+        else
+        {
+
+            <center><img src="/css/loading.gif" height="250"></center>
         }
     </tbody>
 </table>
@@ -63,36 +82,46 @@
                 <div class="form-group">
                     <label for="txtTitle">Название сообщения</label>
                     <input type="text" class="form-control" @bind="message.Name">
+                    <span class="alert-danger">@errorMessedge</span>
                 </div>
                 <div class="form-group">
-                    <input type="hidden" class="form-control" id="safeFile" @bind="safeFile" >
+                    <input type="hidden" class="form-control" id="safeFile" @bind="safeFile">
                 </div>
 
-                
-                    <div class="form-group">
-                    <br/><br/>
-                        <center>
-                        <div id="sound-clip">
-                            @if (message.BinaryData != null)
-                            {
+                <div class="form-group">
+                    <br /><br />
+                    @if (message.MessagesId != 0 && message.BinaryData != null)
+                    {
+                        <center>1
+                            <div id="sound-clip">
                                 <article class="clip" id="plaer">
                                     <audio controls="" src="data:audio/ogg; codecs=opu;base64,@System.Convert.ToBase64String(message.BinaryData)"></audio>
-                                </article>
+                                </article>                              
+                            </div>
+                            <section class="main-controls">
+                                <div id="buttons" style="display:none;">
+                                    <button type="button" class="btn @btnRecord @recordButton" disabled="@recording" @onclick=Record>Записать</button>
+                                    <button type="button" class="btn btn-success stop bouton" disabled="@notRecording" @onclick=Stop>Остановить</button>
+                                </div>
                                 <button type="button" id="delRecord" style="display: block;" class="align-content-center btn btn-danger" @onclick="(e => Del(message.MessagesId))">Удалить запись</button>
-                            }
-                        </div>
-                        <section class="main-controls">
-                            @if (message.BinaryData == null)
-                            {
+                            </section>
+                        </center>
+                    }
+                    else
+                    {
+                        <center>2
+                            <div id="sound-clip">
+                            </div>
+                            <section class="main-controls">
                                 <div id="buttons">
                                     <button type="button" class="btn @btnRecord @recordButton" disabled="@recording" @onclick=Record>Записать</button>
                                     <button type="button" class="btn btn-success stop bouton" disabled="@notRecording" @onclick=Stop>Остановить</button>
                                 </div>
-                            }
-                                <button type="button" id="delRecord" style="display: none;" class="align-content-center btn btn-danger" @onclick="(e => Del(message.MessagesId))">Удалить запись</button>
-                        </section>
+                                <button type="button" id="delRecord" style="display:none;" class="btn btn-danger" @onclick="(e => Del(message.MessagesId))">Удалить запись</button>
+                            </section>
                         </center>
-                     </div>
+                    }
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" disabled="@recording" class="btn btn-primary" @onclick="(e => CreateOrUpdateMessage())">Сохранить</button>
@@ -104,17 +133,19 @@
 
 
 
-@code{
+@code {
     private List<Messages>? messages { get; set; }
     private Messages message = new Messages();
     string formTitle = "";
-    public int safeFile=0;
+    string errorMessedge = "";
+    public int safeFile = 0;
 
     [Inject]
     public IMessagesClientServices? MessagesClientServices { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
+        //await Task.Delay(3000);
         messages = (await _service.GetAllMessagesAsync()).ToList();
     }
 
@@ -136,26 +167,39 @@
 
     private async Task CloseModal()
     {
+        safeFile = 0;
+        errorMessedge = "";
         await _js.InvokeVoidAsync("global.closeModal", "myModal");
         await _js.InvokeVoidAsync("SoundJSMethods.close");
     }
 
     private async Task CreateOrUpdateMessage()
     {
-        if (message.MessagesId == 0)
+        if (message.Name == null || message.Name == "")
         {
-            var newRecord = await _service.CreateOrUpdateMessageAsync(message, safeFile);
-            messages.Insert(0, newRecord);
-            await CloseModal();
+            errorMessedge = "'Название сообщения' - обязательно к заполению!";
         }
         else
         {
-            var updatedRecord = await _service.CreateOrUpdateMessageAsync(message, safeFile);
-            messages = messages.Where(i => i.MessagesId != updatedRecord.MessagesId).ToList();
-            messages.Insert(0, updatedRecord);
-            await CloseModal();
+            if (message.MessagesId == 0)
+            {
+                var newRecord = await _service.CreateOrUpdateMessageAsync(message, safeFile);
+                messages.Insert(0, newRecord);
+                await CloseModal();
+            }
+            else
+            {
+                var updatedRecord = await _service.CreateOrUpdateMessageAsync(message, safeFile);
+                messages = messages.Where(i => i.MessagesId != updatedRecord.MessagesId).ToList();
+                messages.Insert(0, updatedRecord);
+                await CloseModal();
+            }
+            safeFile = 0;
+            await _js.InvokeVoidAsync("SoundJSMethods.saveMessege");
+            errorMessedge = "";
+
         }
-        await  _js.InvokeVoidAsync("SoundJSMethods.saveMessege");
+
     }
 
     private async Task DeleteMessage(int id)
@@ -178,7 +222,7 @@
         recording = true;
         notRecording = false;
 
-        await  _js.InvokeVoidAsync("SoundJSMethods.startRecording");
+        await _js.InvokeVoidAsync("SoundJSMethods.startRecording");
     }
 
     private async Task Stop()
@@ -188,14 +232,14 @@
         recording = false;
         notRecording = true;
         safeFile = 1;
-        await  _js.InvokeVoidAsync("SoundJSMethods.stopRecording");
-    }    
-    
-    
+        await _js.InvokeVoidAsync("SoundJSMethods.stopRecording");
+    }
+
+
     private async Task Del(int id)
     {
         safeFile = 0;
         await _service.DeleteAudioFileAsync(id);
-        await  _js.InvokeVoidAsync("SoundJSMethods.delRecording");
+        await _js.InvokeVoidAsync("SoundJSMethods.delRecording");
     }
 }

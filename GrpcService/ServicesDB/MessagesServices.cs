@@ -52,7 +52,7 @@ namespace GrpcService.ServicesDB
         }
 
 
-        public async Task<Messages?> DeleteMessageAsync(int id)
+        public async Task<Messages> DeleteMessageAsync(int id)
         {
             Messages? deleteModel = new Messages();
             deleteModel = await _context.Messages.FindAsync(id);

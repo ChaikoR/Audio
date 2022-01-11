@@ -4,9 +4,8 @@
 <PageTitle>Accordion</PageTitle>
 
 <div class="collapsable">
-   @* <div class="title" @onclick="@(()=>collapse1Visible = !collapse1Visible)">*@
-    <div class="title" @onclick="@Toggle">
-        @if (Collapsed)
+    <div class="title" @onclick="@(()=>Collapsed1 = !Collapsed1)">
+        @if (Collapsed1)
         {
             <span class="oi oi-chevron-right mr-1"></span>
         }
@@ -16,28 +15,36 @@
         }
         Настройки
     </div>
-
-    <div class="value">
-        <h4><span class="badge badge-success">Настройки</span></h4>
-    </div>
-
 </div>
  
-@if (!Collapsed)
+@if (!Collapsed1)
 {
     <div class="collapsable-panel">
-        @ChildContent
+       текст 1
+    </div>
+}
+<div class="collapsable">
+    <div class="title" @onclick="@(()=>Collapsed2 = !Collapsed2)">
+        @if (Collapsed2)
+        {
+            <span class="oi oi-chevron-right mr-1"></span>
+        }
+        else
+        {
+            <span class="oi oi-chevron-bottom mr-1"></span>
+        }
+        Сообщения
+    </div>
+</div>
+ 
+@if (!Collapsed2)
+{
+    <div class="collapsable-panel">
+       текст 2
     </div>
 }
  
 @code {
-    [Parameter] public RenderFragment ChildContent { get; set; }
-    [Parameter] public bool Collapsed { get; set; }
-    [Parameter] public string Title { get; set; }
-    [Parameter] public string Value { get; set; }
- 
-    void Toggle()
-    {
-        Collapsed = !Collapsed;
-    }
+    public bool Collapsed1 { get; set; } = true;
+    public bool Collapsed2 { get; set; } = false;
 }
