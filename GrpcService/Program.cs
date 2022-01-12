@@ -19,8 +19,6 @@ builder.Services.AddTransient<IMessagesServices, MessagesServices>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-app.MapGrpcService<GreeterService>();
-app.MapGrpcService<CustomersService>();
 app.MapGrpcService<MessagesService>();
 
 

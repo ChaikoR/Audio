@@ -2,11 +2,11 @@
 
 namespace Blazor.Client.Interface
 {
-        public interface IMessagesClientServices
-        {
-            Task<IEnumerable<Messages>> GetAllMessagesAsync();
-            Task<Messages> CreateOrUpdateMessageAsync(Messages newMessages, int safeFile);
-            Task<Messages> DeleteMessageAsync(int Id);
-            Task<Messages> DeleteAudioFileAsync(int id);
+    public interface IMessagesClientServices
+    {
+        Task<IEnumerable<Messages>> GetAllMessagesAsync();
+        Task<Messages> CreateOrUpdateMessageAsync(Messages newMessages, int safeFile);
+        Task<Messages> DeleteMessageAsync(int Id);
+        Task<Messages> DeleteAudioFileAsync(int id);
     }
 }

@@ -19,7 +19,7 @@ namespace GrpcService.Data
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            builder.Entity<Messages>().HasData(new Messages { MessagesId = 1, Name = "http://sample.com" });
+            builder.Entity<Messages>().HasData(new Messages { MessagesId = 1, Name = "Messages1" });
         }
 
  
