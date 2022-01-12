@@ -70,7 +70,8 @@ namespace GrpcService.ServicesDB
             delModel = await _context.Messages.FindAsync(id);
             if (delModel != null) {
                 delModel.BinaryData = null;
-                await _context.SaveChangesAsync(); 
+                await _context.SaveChangesAsync();
+                return delModel;
             }
             return new Messages();
         }

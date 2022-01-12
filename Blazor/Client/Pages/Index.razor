@@ -100,7 +100,7 @@
                             <div id="sound-clip">
                                 <article class="clip plaer" style="display:block;" id="plaer">
                                     <audio controls="" src="data:audio/ogg; codecs=opu;base64,@System.Convert.ToBase64String(message.BinaryData)"></audio>
-                                </article>                              
+                                </article>
                             </div>
                             <section class="main-controls">
                                 <div id="buttons" style="display:none;">
@@ -165,8 +165,20 @@
         else
         {
             formTitle = "Редактирование";
-            message = messages.Where(i => i.MessagesId == postId).FirstOrDefault();
-            
+            if (postId != 0)
+            {
+                message = messages.FirstOrDefault(i => i.MessagesId == postId);
+            }
+            if (message.BinaryData == null)
+            {
+                await _js.InvokeVoidAsync("SoundJSMethods.openModalEdit");
+            }
+            else
+            {
+                await _js.InvokeVoidAsync("SoundJSMethods.openModalEditAudio");
+
+            }
+
         }
         await _js.InvokeVoidAsync("global.openModal", "myModal");
     }
@@ -175,10 +187,18 @@
     {
         safeFile = 0;
         errorMessedge = "";
-        if (messagesId == 0)
+        if (messagesId != 0)
         {
-            await _js.InvokeVoidAsync("SoundJSMethods.close");
+            var tempMessag = messages.FirstOrDefault(i => i.MessagesId == messagesId);
+            if (tempMessag != null)
+            {
+                messages = messages.Where(i => i.MessagesId != tempMessag.MessagesId).ToList();
+                messages.Insert(0, tempMessag);
+            }
+
+            //await _js.InvokeVoidAsync("SoundJSMethods.close");
         }
+        await _js.InvokeVoidAsync("SoundJSMethods.close");
         await _js.InvokeVoidAsync("global.closeModal", "myModal");
     }
 
@@ -258,9 +278,9 @@
         if (delModel.MessagesId != 0)
         {
             var message = messages.FirstOrDefault(i => i.MessagesId == delModel.MessagesId);
-            message.BinaryData = null;    
+            message.BinaryData = null;
         }
-        
+
         await _js.InvokeVoidAsync("SoundJSMethods.delRecording");
     }
 }

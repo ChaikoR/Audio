@@ -175,12 +175,30 @@ if (navigator.mediaDevices) {
                     
                     document.getElementById("buttons").style.display = "block";
                     document.getElementById("delRecord").style.display = "none";
-                    //alert('Открыли форму добавления!');
+                },
+                openModalEdit: function () {
+                    if (document.getElementsByClassName('plaer').length > 0) {
+                        document.getElementById('plaer').style.display = "none";
+                    }
+                    document.getElementById("buttons").style.display = "block";
+                    document.getElementById("delRecord").style.display = "none";
+                },
+                openModalEditAudio: function () {
+                    if (document.getElementsByClassName('plaer').length >0) {
+                        document.getElementById('plaer').style.display = "block";
+                    }
+                    
+                    document.getElementById("buttons").style.display = "none";
+                    document.getElementById("delRecord").style.display = "block";
                 },
                 close: function () {
                     if (document.getElementById('plaer') != null) {
                         //document.getElementById('plaer').remove();
                         document.getElementById('plaer').style.display = "none";
+                    }
+                    if (document.getElementsByClassName('plaer').length >= 2) {
+                        document.getElementById('plaer').remove();
+                        alert('del id-plaeer');
                     }
                     document.getElementById("buttons").style.display = "block";
                     document.getElementById("delRecord").style.display = "none";
