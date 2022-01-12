@@ -40,9 +40,10 @@ namespace Blazor.Client.Services
             return await response.Content.ReadFromJsonAsync<Messages>();
         }
 
-        public async Task DeleteAudioFileAsync(int id)
+        public async Task<Messages> DeleteAudioFileAsync(int id)
         {
-            await _httpClient.DeleteAsync($"/api/Messages/DeleteAudioFile/{id}");
+            var response = await _httpClient.DeleteAsync($"/api/Messages/DeleteAudioFile/{id}");
+            return await response.Content.ReadFromJsonAsync<Messages>();
         }
     }
 }

@@ -35,6 +35,10 @@
             {
                 @foreach (var message in messages.OrderBy(i => i.MessagesId))
                 {
+                    @if (message.BinaryData != null && message.BinaryData.Length == 0)
+                    {
+                        message.BinaryData = null;
+                    }
                     <tr>
                         <td>@message.MessagesId</td>
                         <td>@message.Name</td>
@@ -75,7 +79,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">@formTitle</h5>
-                <button type="button" disabled="@recording" class="btn-close" @onclick="(e => CloseModal())" aria-label="Close">
+                <button type="button" disabled="@recording" class="btn-close" @onclick="(e => CloseModal(message.MessagesId))" aria-label="Close">
                 </button>
             </div>
             <div class="modal-body">
@@ -92,9 +96,9 @@
                     <br /><br />
                     @if (message.MessagesId != 0 && message.BinaryData != null)
                     {
-                        <center>1
+                        <center>
                             <div id="sound-clip">
-                                <article class="clip" id="plaer">
+                                <article class="clip plaer" style="display:block;" id="plaer">
                                     <audio controls="" src="data:audio/ogg; codecs=opu;base64,@System.Convert.ToBase64String(message.BinaryData)"></audio>
                                 </article>                              
                             </div>
@@ -109,7 +113,7 @@
                     }
                     else
                     {
-                        <center>2
+                        <center>
                             <div id="sound-clip">
                             </div>
                             <section class="main-controls">
@@ -125,7 +129,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" disabled="@recording" class="btn btn-primary" @onclick="(e => CreateOrUpdateMessage())">Сохранить</button>
-                <button type="button" disabled="@recording" class="btn btn-secondary" @onclick="(e => CloseModal())">Закрыть</button>
+                <button type="button" disabled="@recording" class="btn btn-secondary" @onclick="(e => CloseModal(message.MessagesId))">Закрыть</button>
             </div>
         </div>
     </div>
@@ -156,21 +160,26 @@
             formTitle = "Добавление";
             message = new Messages();
             await _js.InvokeVoidAsync("global.openModal", "myModal");
+            await _js.InvokeVoidAsync("SoundJSMethods.openModalAdd");
         }
         else
         {
             formTitle = "Редактирование";
             message = messages.Where(i => i.MessagesId == postId).FirstOrDefault();
-            await _js.InvokeVoidAsync("global.openModal", "myModal");
+            
         }
+        await _js.InvokeVoidAsync("global.openModal", "myModal");
     }
 
-    private async Task CloseModal()
+    private async Task CloseModal(int messagesId)
     {
         safeFile = 0;
         errorMessedge = "";
+        if (messagesId == 0)
+        {
+            await _js.InvokeVoidAsync("SoundJSMethods.close");
+        }
         await _js.InvokeVoidAsync("global.closeModal", "myModal");
-        await _js.InvokeVoidAsync("SoundJSMethods.close");
     }
 
     private async Task CreateOrUpdateMessage()
@@ -184,29 +193,27 @@
             if (message.MessagesId == 0)
             {
                 var newRecord = await _service.CreateOrUpdateMessageAsync(message, safeFile);
+                if (newRecord.BinaryData.Length == 0)
+                {
+                    newRecord.BinaryData = null;
+                }
                 messages.Insert(0, newRecord);
-                await CloseModal();
+                await CloseModal(message.MessagesId);
             }
             else
             {
                 var updatedRecord = await _service.CreateOrUpdateMessageAsync(message, safeFile);
                 messages = messages.Where(i => i.MessagesId != updatedRecord.MessagesId).ToList();
                 messages.Insert(0, updatedRecord);
-                await CloseModal();
+                await CloseModal(message.MessagesId);
             }
             safeFile = 0;
-            await _js.InvokeVoidAsync("SoundJSMethods.saveMessege");
             errorMessedge = "";
-
+            await _js.InvokeVoidAsync("SoundJSMethods.saveMessege");
         }
 
     }
 
-    private async Task DeleteMessage(int id)
-    {
-        var delModel = await _service.DeleteMessageAsync(id);
-        messages = messages.Where(i => i.MessagesId != delModel.MessagesId).ToList();
-    }
 
     string recordButton = "record";
     string btnRecord = "btn-warning";
@@ -236,10 +243,24 @@
     }
 
 
+    private async Task DeleteMessage(int id)
+    {
+        var delModel = await _service.DeleteMessageAsync(id);
+
+        messages = messages.Where(i => i.MessagesId != delModel.MessagesId).ToList();
+    }
+
     private async Task Del(int id)
     {
         safeFile = 0;
-        await _service.DeleteAudioFileAsync(id);
+
+        var delModel = await _service.DeleteAudioFileAsync(id);
+        if (delModel.MessagesId != 0)
+        {
+            var message = messages.FirstOrDefault(i => i.MessagesId == delModel.MessagesId);
+            message.BinaryData = null;    
+        }
+        
         await _js.InvokeVoidAsync("SoundJSMethods.delRecording");
     }
 }

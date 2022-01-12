@@ -56,6 +56,7 @@ namespace GrpcService.Services
             MessageModel messageModel = new MessageModel();
             messageModel.MessagesId = addMessage.MessagesId;
             messageModel.Name = addMessage.Name;
+            messageModel.BinaryData = ByteToByteString(addMessage.BinaryData);
 
             return await Task.FromResult(messageModel);
         }
@@ -74,6 +75,7 @@ namespace GrpcService.Services
             MessageModel messageModel = new MessageModel();
             messageModel.MessagesId = updateMessage.MessagesId;
             messageModel.Name = updateMessage.Name;
+            messageModel.BinaryData = ByteToByteString(updateMessage.BinaryData);
 
             return await Task.FromResult(messageModel);
         }
@@ -85,13 +87,20 @@ namespace GrpcService.Services
             MessageModel delModel = new MessageModel();
             delModel.MessagesId = model.MessagesId; 
             delModel.Name = model.Name;
+            delModel.BinaryData = ByteToByteString(model.BinaryData);
+
             return await Task.FromResult(delModel);
         }
 
-        public override async Task<MessagesRequest> DeleteAudioFile(MessageId request, ServerCallContext context)
+        public override async Task<MessageModel> DeleteAudioFile(MessageId request, ServerCallContext context)
         {
-            await _context.DeleteAudioFileAsync(request.MessagesId);
-            return await Task.FromResult(new MessagesRequest());
+            var model = await _context.DeleteAudioFileAsync(request.MessagesId);
+            MessageModel delModel = new MessageModel();
+            delModel.MessagesId = model.MessagesId;
+            delModel.Name = model.Name;
+            delModel.BinaryData = ByteToByteString(model.BinaryData);
+
+            return await Task.FromResult(delModel);
         }
         public byte[] ByteStringToByte(ByteString bytes) {
             byte[]  ret = bytes.ToByteArray();

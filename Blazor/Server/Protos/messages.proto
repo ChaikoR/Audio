@@ -7,7 +7,7 @@ service RemoteMessages {
 	rpc AddMessage(MessageModel) returns (MessageModel);
 	rpc UpdateMessage (MessageModel) returns (MessageModel);
 	rpc DeleteMessage (MessageId) returns (MessageModel);
-	rpc DeleteAudioFile(MessageId) returns (MessagesRequest);
+	rpc DeleteAudioFile(MessageId) returns (MessageModel);
 	rpc GetMessagesLastId(MessageId) returns (MessageModel);
 }
 

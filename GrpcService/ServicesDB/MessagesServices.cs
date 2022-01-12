@@ -61,16 +61,18 @@ namespace GrpcService.ServicesDB
                 _context.SaveChanges();
                 return deleteModel;
             }
-            return null;
+            return deleteModel;
         }
 
-        public async Task DeleteAudioFileAsync(int id)
+        public async Task<Messages> DeleteAudioFileAsync(int id)
         {
-            var model = _context.Messages.Find(id);
-            if (model != null) {
-                model.BinaryData = null;
+            Messages? delModel = new Messages(); 
+            delModel = await _context.Messages.FindAsync(id);
+            if (delModel != null) {
+                delModel.BinaryData = null;
                 await _context.SaveChangesAsync(); 
             }
+            return new Messages();
         }
     }
 }

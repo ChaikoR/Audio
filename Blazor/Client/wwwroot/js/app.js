@@ -36,7 +36,7 @@ if (navigator.mediaDevices) {
             mediaRecorder.onstop = (event) => {
 
                 const soundClips = document.querySelector('#sound-clip');
-
+                
                 //const audio = new Audio();
 
                 
@@ -48,6 +48,7 @@ if (navigator.mediaDevices) {
 
                 //const deleteButton = document.createElement('button');
                 clipContainer.classList.add('clip');
+                clipContainer.classList.add('plaer');
                 clipContainer.setAttribute('id', 'plaer');
 
                 //deleteButton.textContent = 'Delete';
@@ -147,22 +148,39 @@ if (navigator.mediaDevices) {
                 },
 
                 delRecording: function () {
-                    if (document.getElementById('plaer')) {
+                    if (document.getElementsByClassName('plaer').length > 0) {
                         document.getElementById('plaer').remove();
+                        //document.getElementById('plaer').style.display = "none";
                     }
+
+                    //if (document.getElementsByClassName('plaer').length > 0) { document.getElementById('plaer').remove() }
+
                     document.getElementById("buttons").style.display = "block";
                     document.getElementById("delRecord").style.display = "none";
                 },
                 saveMessege: function () {
-                    if (document.getElementById('plaer')) {
-                        document.getElementById('plaer').remove();
+                    if (document.getElementById('plaer') != null) {
+                        //document.getElementById('plaer').remove();
+                        document.getElementById('plaer').style.display = "none";
                     }
                     document.getElementById("buttons").style.display = "block";
                     document.getElementById("delRecord").style.display = "none";
                 },
+                openModalAdd: function () {
+                    //if (document.getElementById('plaer')!=null) {
+                    //    document.getElementById('plaer').style.display = "none";
+                    //}
+
+                    if (document.getElementsByClassName('plaer').length > 0) { document.getElementById('plaer').remove() }
+                    
+                    document.getElementById("buttons").style.display = "block";
+                    document.getElementById("delRecord").style.display = "none";
+                    //alert('Открыли форму добавления!');
+                },
                 close: function () {
-                    if (document.getElementById('plaer')) {
-                        document.getElementById('plaer').remove();
+                    if (document.getElementById('plaer') != null) {
+                        //document.getElementById('plaer').remove();
+                        document.getElementById('plaer').style.display = "none";
                     }
                     document.getElementById("buttons").style.display = "block";
                     document.getElementById("delRecord").style.display = "none";

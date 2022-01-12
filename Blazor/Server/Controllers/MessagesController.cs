@@ -98,13 +98,12 @@ namespace Blazor.Server.Controllers
 
         }
 
-
         [HttpDelete]
         [Route("DeleteAudioFile/{id:int}")]
         public async Task<IActionResult> DeleteAudioFile(int id)
         {
-            await _servicesGrpc.DeleteAudioFileAsync(id);
-            return Ok();
+            Messages delModel = await _servicesGrpc.DeleteAudioFileAsync(id);
+            return Ok(delModel);
         }
     }
 }
