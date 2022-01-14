@@ -1,78 +1,13 @@
-﻿@page "/"
+﻿@using Blazor.Shared.Model
 
-@*@inject JsonPlaceHolderClient _jsonPlaceHolderClient;*@
 @inject IMessagesClientServices _service;
 @inject IJSRuntime _js;
 
-<PageTitle>Sound</PageTitle>
-
-
-<h1>Sound</h1>
-<hr/>
-
-<button class="btn btn-primary" @onclick='@(e => OpenModal(0,"add"))'>Добавить сообщение</button>
+<AddButton OpenModal="OpenModal" />
 <br />
 <br />
 
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th scope="col">Id</th>
-            <th scope="col">Название сообщения</th>
-            <th scope="col">Сообщение</th>
-            <th scope="col">Операции</th>
-        </tr>
-    </thead>
-    <tbody>
-        @if (messages != null)
-        {
-            @if (messages.Count == 0)
-            {
-                <tr><td colspan="4">none items</td></tr>
-
-            }
-            else
-            {
-                @foreach (var message in messages.OrderBy(i => i.MessagesId))
-                {
-                    @if (message.BinaryData != null && message.BinaryData.Length == 0)
-                    {
-                        message.BinaryData = null;
-                    }
-                    <tr>
-                        <td>@message.MessagesId</td>
-                        <td>@message.Name</td>
-                        <td>
-                            @if (message.BinaryData != null)
-                            {
-                                <article class="clip">
-                                    <audio controls="" src="data:audio/ogg; codecs=opu;base64,@System.Convert.ToBase64String(message.BinaryData)"></audio>
-                                </article>
-                            }
-                        </td>
-                        <td>
-                            <button type="button" class="btn btn-secondary"
-                        @onclick='@(e => OpenModal(message.MessagesId,"update"))'>
-                                Редактировать
-                            </button>
-                            |
-                            <button type="button" class="btn btn-danger"
-                        @onclick='@(e => DeleteMessage(message.MessagesId))'>
-                                Удалить
-                            </button>
-                        </td>
-                    </tr>
-                }
-            }
-
-        }
-        else
-        {
-
-            <center><img src="/css/loading.gif" height="250"></center>
-        }
-    </tbody>
-</table>
+<TableItems Messages="messages" DeleteMessage="DeleteMessage" OpenModal="OpenModal"/>
 
 <div class="modal" tabindex="-1" role="dialog" id="myModal">
     <div class="modal-dialog" role="document">
@@ -182,6 +117,38 @@
         }
         await _js.InvokeVoidAsync("global.openModal", "myModal");
     }
+
+    private async Task OpenModal(AddButtonModel model)
+    {
+        if (model.OperationType.ToLower() == "add")
+        {
+            formTitle = "Добавление";
+            message = new Messages();
+            await _js.InvokeVoidAsync("global.openModal", "myModal");
+            await _js.InvokeVoidAsync("SoundJSMethods.openModalAdd");
+        }
+        else
+        {
+            formTitle = "Редактирование";
+            if (model.PostId != 0)
+            {
+                message = messages.FirstOrDefault(i => i.MessagesId == model.PostId);
+            }
+            if (message.BinaryData == null)
+            {
+                await _js.InvokeVoidAsync("SoundJSMethods.openModalEdit");
+            }
+            else
+            {
+                await _js.InvokeVoidAsync("SoundJSMethods.openModalEditAudio");
+
+            }
+
+        }
+        await _js.InvokeVoidAsync("global.openModal", "myModal");
+    }
+
+    
 
     private async Task CloseModal(int messagesId)
     {

@@ -1,0 +1,79 @@
+﻿<div class="modal" tabindex="-1" role="dialog" id="myModal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">@formTitle</h5>
+                <button type="button" disabled="@recording" class="btn-close" @onclick="(e => CloseModal.InvokeAsync(Message.MessagesId))" aria-label="Close">
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="txtTitle">Название сообщения</label>
+                    <input type="text" class="form-control" @bind="Message.Name">
+                    <span class="alert-danger">@errorMessedge</span>
+                </div>
+                <div class="form-group">
+                    <input type="hidden" class="form-control" id="safeFile" @bind="safeFile">
+                </div>
+
+                <div class="form-group">
+                    <br /><br />
+                    @if (Message.MessagesId != 0 && Message.BinaryData != null)
+                    {
+                        <center>
+                            <div id="sound-clip">
+                                <article class="clip plaer" style="display:block;" id="plaer">
+                                    <audio controls="" src="data:audio/ogg; codecs=opu;base64,@System.Convert.ToBase64String(Message.BinaryData)"></audio>
+                                </article>
+                            </div>
+                            <section class="main-controls">
+                                <div id="buttons" style="display:none;">
+                                    <button type="button" class="btn @btnRecord @recordButton" disabled="@recording" @onclick=Record>Записать</button>
+                                    <button type="button" class="btn btn-success stop bouton" disabled="@notRecording" @onclick=Stop>Остановить</button>
+                                </div>
+                                <button type="button" id="delRecord" style="display: block;" class="align-content-center btn btn-danger" @onclick="(e => Del.InvokeAsync(Message.MessagesId))">Удалить запись</button>
+                            </section>
+                        </center>
+                    }
+                    else
+                    {
+                        <center>
+                            <div id="sound-clip">
+                            </div>
+                            <section class="main-controls">
+                                <div id="buttons">
+                                    <button type="button" class="btn @btnRecord @recordButton" disabled="@recording" @onclick="(()=>Record.InvokeAsync())">Записать</button>
+                                    <button type="button" class="btn btn-success stop bouton" disabled="@notRecording" @onclick="(()=>Stop.InvokeAsync())">Остановить</button>
+                                </div>
+                                <button type="button" id="delRecord" style="display:none;" class="btn btn-danger" @onclick="(e => Del.InvokeAsync(Message.MessagesId))">Удалить запись</button>
+                            </section>
+                        </center>
+                    }
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" disabled="@recording" class="btn btn-primary" @onclick="(e => CreateOrUpdateMessage.InvokeAsync())">Сохранить</button>
+                <button type="button" disabled="@recording" class="btn btn-secondary" @onclick="(e => CloseModal.InvokeAsync(Message.MessagesId))">Закрыть</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter] public Messages? Message { get; set; }
+
+    [Parameter] public string formTitle { get; set; } = string.Empty;
+    [Parameter] public string recording { get; set; } = string.Empty;
+    [Parameter] public string btnRecord { get; set; } = string.Empty;
+    [Parameter] public string recordButton { get; set; } = string.Empty;
+    [Parameter] public string notRecording { get; set; } = string.Empty;
+    [Parameter] public string errorMessedge { get; set; } = string.Empty;
+    [Parameter] public int safeFile { get; set; }
+
+    [Parameter] public EventCallback<int> CloseModal { get; set; }
+    [Parameter] public EventCallback CreateOrUpdateMessage { get; set; }
+    [Parameter] public EventCallback Record { get; set; }
+    [Parameter] public EventCallback Stop { get; set; }
+    [Parameter] public EventCallback<int> Del { get; set; }
+    
+}

@@ -1,0 +1,40 @@
+﻿@using Blazor.Shared.Model
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th scope="col">Id</th>
+            <th scope="col">Название сообщения</th>
+            <th scope="col">Сообщение</th>
+            <th scope="col">Операции</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Messages != null)
+        {
+            @if (Messages.Count == 0)
+            {
+                <tr><td colspan="4">none items</td></tr>
+            }
+            else
+            {
+                @foreach (var message in Messages.OrderBy(i => i.MessagesId))
+                {
+                    <Item Message="message" DeleteMessage="DeleteMessage" OpenModal="OpenModal"/>
+                }
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="4"><img src="/css/loading.gif" height="250"></td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    [Parameter] public List<Messages>? Messages { get; set; }
+    [Parameter] public EventCallback<int> DeleteMessage { get; set; }
+    [Parameter] public EventCallback<AddButtonModel> OpenModal { get; set; }
+}

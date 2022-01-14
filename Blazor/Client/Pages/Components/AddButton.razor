@@ -1,0 +1,7 @@
+﻿@using Blazor.Shared.Model
+
+<button class="btn btn-primary" @onclick='@(e => OpenModal.InvokeAsync(new AddButtonModel(){PostId=0, OperationType="add"}))'>Добавить сообщение</button>
+
+@code {
+    [Parameter] public EventCallback<AddButtonModel> OpenModal { get; set; }
+}

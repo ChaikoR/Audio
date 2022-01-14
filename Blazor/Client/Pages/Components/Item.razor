@@ -1,0 +1,42 @@
+﻿@using Blazor.Shared.Model
+
+
+@if (Message.BinaryData != null && Message.BinaryData.Length == 0)
+{
+    Message.BinaryData = null;
+}
+
+@if (Message.BinaryData != null && Message.BinaryData.Length == 0)
+                    {
+                        Message.BinaryData = null;
+                    }
+                    <tr>
+                        <td>@Message.MessagesId</td>
+                        <td>@Message.Name</td>
+                        <td>
+                            @if (Message.BinaryData != null)
+                            {
+                                <article class="clip">
+                                    <audio controls="" src="data:audio/ogg; codecs=opu;base64,@System.Convert.ToBase64String(Message.BinaryData)"></audio>
+                                </article>
+                            }
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-secondary"
+                        @onclick='@(e => OpenModal.InvokeAsync(new AddButtonModel(){PostId = Message.MessagesId, OperationType="update"}))'>
+                                Редактировать
+                            </button>
+                            |
+                            <button type="button" class="btn btn-danger"
+                        @onclick='@(e => DeleteMessage.InvokeAsync(Message.MessagesId))'>
+                                Удалить
+                            </button>
+                        </td>
+                    </tr>
+@code {
+
+    [Parameter] public Messages? Message { get; set; }
+    [Parameter] public EventCallback<int> DeleteMessage { get; set; }
+    [Parameter] public EventCallback<AddButtonModel> OpenModal { get; set; }
+
+}
