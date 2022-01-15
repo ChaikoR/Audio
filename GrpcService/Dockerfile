@@ -5,16 +5,23 @@
 #Connecting to local or remote SQL Server from Docker
 #docker ps -a
 
+#> net stop winnat
+#> docker start ...
+#> net start winnat
+
+#1460
+
+#7298
 
 
 
 FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base
 WORKDIR /app
 
-
+EXPOSE 1460
 EXPOSE 80
 EXPOSE 443
-EXPOSE 1433
+
 
 
 

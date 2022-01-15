@@ -19,7 +19,7 @@ namespace Blazor.Server.Services
 
             List<Messages> messages = new List<Messages>();
 
-            var channel = GrpcChannel.ForAddress("https://localhost:49170/");
+            var channel = GrpcChannel.ForAddress("https://localhost:7298");
             var client = new RemoteMessages.RemoteMessagesClient(channel);
             var result = await client.GetMessagesAsync(new MessagesRequest(), new Grpc.Core.Metadata());
 
