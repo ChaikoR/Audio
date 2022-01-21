@@ -3,12 +3,12 @@
 FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base
 WORKDIR /app
 
-EXPOSE 2222
-EXPOSE 1111
-EXPOSE 1433
-EXPOSE 1362
+
 EXPOSE 80
 EXPOSE 443
+EXPOSE 1433
+
+
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
