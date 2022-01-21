@@ -15,7 +15,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
       "inspectUri": "{wsProtocol}://{url.hostname}:{url.port}/_framework/debug/ws-proxy?browser={browserInspectUri}",
-      "applicationUrl": "https://localhost:7029;http://localhost:5029",
+      "applicationUrl": "https://localhost:7777;http://localhost:5555",
       "dotnetRunMessages": true
     },
     "IIS Express": {
@@ -29,12 +29,22 @@
     "WSL": {
       "commandName": "WSL2",
       "launchBrowser": true,
-      "launchUrl": "https://localhost:7029",
+      "launchUrl": "https://localhost:7777",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "ASPNETCORE_URLS": "https://localhost:7029;http://localhost:5029"
+        "ASPNETCORE_URLS": "https://localhost:7777;http://localhost:5029"
       },
       "distributionName": ""
+    },
+    "Docker": {
+      "commandName": "Docker",
+      "launchBrowser": true,
+      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}",
+      //"DockerfileRunArguments": "-p 7777:7777 -p 5555:5555  -p 80:80 -p 443:443",
+      "publishAllPorts": true,
+      "useSSL": true
     }
   }
 }
+
+    
