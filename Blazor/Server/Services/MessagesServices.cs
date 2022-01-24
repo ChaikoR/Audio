@@ -19,7 +19,7 @@ namespace Blazor.Server.Services
 
             List<Messages> messages = new List<Messages>();
 
-            var channel = GrpcChannel.ForAddress("https://localhost:2222/");
+            var channel = GrpcChannel.ForAddress("https://localhost:7298/");
             var client = new RemoteMessages.RemoteMessagesClient(channel);
             var result = await client.GetMessagesAsync(new MessagesRequest(), new Grpc.Core.Metadata());
 
@@ -55,7 +55,7 @@ namespace Blazor.Server.Services
             }
            
 
-            var channel = GrpcChannel.ForAddress("https://localhost:2222");
+            var channel = GrpcChannel.ForAddress("https://localhost:7298");
             var client = new RemoteMessages.RemoteMessagesClient(channel);
             var result = await client.AddMessageAsync(messageModel);
 
@@ -76,7 +76,7 @@ namespace Blazor.Server.Services
                 messageModel.BinaryData = ByteString.CopyFrom(model.BinaryData);
             }
 
-            var channel = GrpcChannel.ForAddress("https://localhost:2222");
+            var channel = GrpcChannel.ForAddress("https://localhost:7298");
             var client = new RemoteMessages.RemoteMessagesClient(channel);
             var result = await client.UpdateMessageAsync(messageModel);
 
@@ -91,7 +91,7 @@ namespace Blazor.Server.Services
             MessageId messageId = new();
             messageId.MessagesId = id;
 
-            var channel = GrpcChannel.ForAddress("https://localhost:2222");
+            var channel = GrpcChannel.ForAddress("https://localhost:7298");
             var client = new RemoteMessages.RemoteMessagesClient(channel);
             var result = await client.DeleteMessageAsync(messageId);
 
@@ -108,7 +108,7 @@ namespace Blazor.Server.Services
             MessageId messageId = new();
             messageId.MessagesId = id;
 
-            var channel = GrpcChannel.ForAddress("https://localhost:2222");
+            var channel = GrpcChannel.ForAddress("https://localhost:7298");
             var client = new RemoteMessages.RemoteMessagesClient(channel);
             var result = await client.DeleteAudioFileAsync(messageId);
             

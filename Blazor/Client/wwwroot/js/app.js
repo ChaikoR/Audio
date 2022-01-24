@@ -68,7 +68,7 @@ if (navigator.mediaDevices) {
                 let fd = new FormData();
                 fd.append("file", blob, filename);
                 var xhr = new XMLHttpRequest();
-                xhr.open("POST", "https://localhost:7029/api/Messages/Save", true);
+                xhr.open("POST", "https://localhost:7777/api/Messages/Save", true);
                 xhr.send(fd);
 
                 // Очищаем буфер для новых записей.
