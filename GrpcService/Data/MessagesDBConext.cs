@@ -21,8 +21,5 @@ namespace GrpcService.Data
         {
             builder.Entity<Messages>().HasData(new Messages { MessagesId = 1, Name = "Messages1" });
         }
-
- 
-
     }
 }

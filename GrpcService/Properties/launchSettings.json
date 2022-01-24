@@ -10,3 +10,6 @@
     }
   }
 }
+
+//Создание докер файла с SQL
+//docker run --name=dockersql2019express -e "ACCEPT_EULA=Y" -e "SA_PASSWORD=TestP@ssw0rd" -e "MSSQL_PID=Express" -p 1441:1433 -d mcr.microsoft.com/mssql/server:2019-latest 
