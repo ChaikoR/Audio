@@ -1,0 +1,18 @@
+version: '3.4'
+
+services:
+  grpcservice:
+    image: ${DOCKER_REGISTRY-}grpcservice
+    build:
+      context: .
+      dockerfile: GrpcService/Dockerfile
+    ports:
+    - "5298:80"
+    - "7298:443"
+    environment:
+      ASPNETCORE_URLS: "https://+;http://+"
+      ASPNETCORE_HTTPS_PORT: "7298"
+      ASPNETCORE_ENVIRONMENT: Development
+    volumes:
+      - ${APPDATA}\microsoft\UserSecrets\:/root/.microsoft/usersecrets
+      - ${USERPROFILE}\.aspnet\https:/root/.aspnet/https/ 
