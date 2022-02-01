@@ -17,7 +17,7 @@ namespace GrpcService.Data
                     catch (Exception ex)
                     {
                         //Log errors or do anything you think it's needed
-                        throw;
+                       // throw;
                     }
                 }
             }

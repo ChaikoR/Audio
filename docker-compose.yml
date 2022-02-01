@@ -6,13 +6,20 @@ services:
     build:
       context: .
       dockerfile: GrpcService/Dockerfile
-    ports:
-    - "5298:80"
-    - "7298:443"
     environment:
-      ASPNETCORE_URLS: "https://+;http://+"
-      ASPNETCORE_HTTPS_PORT: "7298"
-      ASPNETCORE_ENVIRONMENT: Development
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS="https://+:443;http://+:80"
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=pa55w0rd!
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/GrpcService.pfx
+      
     volumes:
-      - ${APPDATA}\microsoft\UserSecrets\:/root/.microsoft/usersecrets
-      - ${USERPROFILE}\.aspnet\https:/root/.aspnet/https/ 
+      #- ${APPDATA}\microsoft\UserSecrets\:/root/.microsoft/usersecrets
+      #- ${USERPROFILE}\.aspnet\https:/root/.aspnet/https/ 
+        - ~/.aspnet/https:/https:ro
+    ports:
+      - 5298:80
+      - 7298:443
+
+      
+      
+      
