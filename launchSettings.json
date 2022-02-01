@@ -3,12 +3,12 @@
     "Docker Compose": {
       "commandName": "DockerCompose",
       "composeLaunchAction": "LaunchBrowser",
-      "composeLaunchServiceName": "blazor.server",
+      //"composeLaunchServiceName": "blazor.server",
       "composeLaunchUrl": "{Scheme}://localhost:{ServicePort}",
       "commandVersion": "1.0",
       "serviceActions": {
-        "blazor.client": "DoNotStart",
-        "blazor.server": "StartDebugging",
+        //"blazor.client": "DoNotStart",
+        //"blazor.server": "StartDebugging",
         "grpcservice": "StartDebugging"
       }
     }

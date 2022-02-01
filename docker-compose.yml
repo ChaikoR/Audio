@@ -2,6 +2,8 @@ version: '3.4'
 
 services:
   grpcservice:
+    depends_on: 
+      - sql-server
     image: ${DOCKER_REGISTRY-}grpcservice
     build:
       context: .
@@ -19,7 +21,17 @@ services:
     ports:
       - 5298:80
       - 7298:443
-
+  
+  sql-server: 
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    hostname: sql-server
+    container_name: sql-server
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=TestP@ssw0rd
+      - MSSQL_PID=Express
+    ports:
+      - "1441:1433"
       
       
       
