@@ -2,8 +2,6 @@ version: '3.4'
 
 services:
   grpcservice:
-    depends_on: 
-      - sql-server
     image: ${DOCKER_REGISTRY-}grpcservice
     build:
       context: .
@@ -11,8 +9,8 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS="https://+:443;http://+:80"
-      - ASPNETCORE_Kestrel__Certificates__Default__Password=pa55w0rd!
-      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/GrpcService.pfx
+      - ASPNETCORE_Kestrel__Certificates__Default__Password="pa55w0rd!""
+      - ASPNETCORE_Kestrel__Certificates__Default__Path="/https/GrpcService.pfx"
       
     volumes:
       #- ${APPDATA}\microsoft\UserSecrets\:/root/.microsoft/usersecrets

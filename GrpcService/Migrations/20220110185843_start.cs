@@ -22,11 +22,6 @@ namespace GrpcService.Migrations
                 {
                     table.PrimaryKey("PK_Messages", x => x.MessagesId);
                 });
-
-            migrationBuilder.InsertData(
-                table: "Messages",
-                columns: new[] { "MessagesId", "BinaryData", "Name" },
-                values: new object[] { 1, null, "http://sample.com" });
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

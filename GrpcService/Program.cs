@@ -25,11 +25,22 @@ builder.WebHost.UseKestrel(options =>
     //options.ListenAnyIP(5298, o => o.Protocols = HttpProtocols.Http1);
 });
 
-builder.Services.AddDbContext<MessagesDBConext>(opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+var server = builder.Configuration["DBServer"] ?? "localhost";
+var port = builder.Configuration["DBPort"] ?? "1433";
+var user = builder.Configuration["DBUser"] ?? "SA";
+var password = builder.Configuration["DBPassword"] ?? "pa55w0rd!";
+var database = builder.Configuration["Database"] ?? "Audio";
+
+builder.Services.AddDbContext<MessagesDBConext>(opt => 
+    opt.UseSqlServer($"Server = {server}, {port}; Database = {database}; User Id = {user}; Password = {password};")
+);
 
 builder.Services.AddTransient<IMessagesServices, MessagesServices>();
 
 var app = builder.Build();
+
+//Запуск миграции + добавление данных в бд
+MigrationManager.PrepPopulation(app);
 
 app.UseHttpsRedirection();
 
@@ -39,5 +50,5 @@ app.MapGrpcService<MessagesService>();
 
 
 app.MapGet("/", () => "Communication with gRPC endpoints must be made through a gRPC client. To learn how to create a client, visit: https://go.microsoft.com/fwlink/?linkid=2086909");
-app.MigrateDatabase();
+
 app.Run();
