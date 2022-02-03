@@ -32,8 +32,8 @@ services:
       #- ${USERPROFILE}\.aspnet\https:/root/.aspnet/https/ 
         - ~/.aspnet/https:/https:ro
     ports:
-      - 5298:80
-      - 7298:443
+      - "5298:80"
+      - "7298:443"
   
 
       
