@@ -25,7 +25,8 @@ builder.WebHost.UseKestrel(options =>
     //options.ListenAnyIP(5298, o => o.Protocols = HttpProtocols.Http1);
 });
 
-var server = builder.Configuration["DBServer"] ?? "localhost";
+//var server = builder.Configuration["DBServer"] ?? "localhost";
+var server = builder.Configuration["DBServer"] ?? "ms-sql-server";
 var port = builder.Configuration["DBPort"] ?? "1433";
 var user = builder.Configuration["DBUser"] ?? "SA";
 var password = builder.Configuration["DBPassword"] ?? "pa55w0rd!";

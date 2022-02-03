@@ -19,6 +19,8 @@ namespace GrpcService.Data
 
             context.Database.Migrate();
 
+            System.Console.WriteLine("Завершена Migrations...");
+
             if (!context.Messages.Any())
             {
                 System.Console.WriteLine("Данные добавляем в ДБ...");
